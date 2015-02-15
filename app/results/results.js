@@ -15,17 +15,17 @@ angular.module('Strawberry.results', ['ngRoute'])
 	$scope.results = results_fixtures.filter(function(e,i){
 		return (e.lookingFor == $scope.user.lookingFor)
 	});
+
+	var interests = []
+	angular.forEach(results_fixtures,function(e,i){
+		if(interests.indexOf(e.lookingFor) == -1) interests.push(e.lookingFor)
+	})
+	$scope.interests = interests
+	console.log($scope.interests)
 }]);
 
 
 var results_fixtures = [
-	{
-		name: "Carlotta",
-		gender: "a girl",
-		age: 23,
-		lookingFor: "lick pussy",
-		lookingForGender: "a girl"
-	},
 	{
 		name: "Henri",
 		gender: "a guy",
@@ -39,6 +39,20 @@ var results_fixtures = [
 		age: 31,
 		lookingFor: "lick pussy",
 		lookingForGender: "a girl"
+	},
+	{
+		name: "Sam & Carlotta",
+		gender: "a couple",
+		age: 24,
+		lookingFor: "lick a dick",
+		lookingForGender: "a guy"
+	},
+	{
+		name: "Stephanie",
+		gender: "a girl",
+		age: 34,
+		lookingFor: "lick a dick",
+		lookingForGender: "a guy"
 	},
 	{
 		name: "Chey",
@@ -109,5 +123,19 @@ var results_fixtures = [
 		age: 30,
 		lookingFor: "drink a beer",
 		lookingForGender: "any"
+	},
+	{
+		name: "Brenna",
+		gender: "a girl",
+		age: 22,
+		lookingFor: "get whipped",
+		lookingForGender: "any"
+	},
+	{
+		name: "Angel",
+		gender: "a guy",
+		age: 90,
+		lookingFor: "get whipped",
+		lookingForGender: "a guy"
 	}
 ]

@@ -1,5 +1,10 @@
 <div id="results">
 	<h2>{{results.length}} people want to {{user.lookingFor}}, <span class="location">near New York.</span></h2>
+	<div class="interests">
+		<span ng-repeat="interest in interests">
+			<a href="#/results/{{interest}}">{{interest}}</a>
+		</span>
+	</div>
 	<div class="item" ng-repeat="user in results">
 		<span class="not-meet"><i class="glyphicon glyphicon-remove"></i></span>
 		<span class="name">{{user.name}}, {{user.age}}</span>
