@@ -15,7 +15,7 @@ angular.module('Strawberry.search', ['ngRoute'])
 		$scope.body.addClass("search-focus")
 	}
 	$scope.searchBlur = function(){
-		$scope.body.removeClass("search-focus")
+		(!$scope.keyword && $scope.body.removeClass("search-focus"))
 	}
 }])
 

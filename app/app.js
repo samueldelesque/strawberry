@@ -8,7 +8,7 @@ angular.module('Strawberry', [
   'ui.bootstrap',
 ]).
 config(['$routeProvider', function($routeProvider) {
-  // $routeProvider.otherwise({redirectTo: '/search'});
+  $routeProvider.otherwise({redirectTo: '/search'});
 }])
 .controller('MainCtrl', function($scope) {
   $scope.body = angular.element("body");
