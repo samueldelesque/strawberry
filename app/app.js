@@ -6,6 +6,7 @@ angular.module('Strawberry', [
 	'Strawberry.results',
 	'Strawberry.search',
 	'Strawberry.signup',
+	'Strawberry.welcome',
 	'ui.bootstrap',
 ]).
 config(['$routeProvider', function($routeProvider) {
@@ -16,7 +17,7 @@ config(['$routeProvider', function($routeProvider) {
 
 	$scope.user = (localStorage.getItem("user"))? angular.fromJson(localStorage.getItem("user")) : {
 		name: "",
-		gender: "a girl",
+		gender: "",
 		age: 20,
 		lookingFor: "",
 		lookingForGender: ""
@@ -72,4 +73,13 @@ config(['$routeProvider', function($routeProvider) {
 			})
 		},
 	}
-});
+})
+.run(function($rootScope) {
+	$rootScope.$on('$routeChangeSuccess', function(ev,data) {   
+		if (data.$$route && data.$$route.controller){
+			$rootScope.controller = data.$$route.controller;
+			$rootScope.animatingClass = "intro"
+			setTimeout(function(){$rootScope.animatingClass = ""},500);
+		}
+   })
+});;

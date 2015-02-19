@@ -16,7 +16,7 @@
 	<link rel="stylesheet" href="styles/index.css">
 	<script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
 </head>
-<body ng-controller="MainCtrl">
+<body ng-controller="MainCtrl" class="{{controller}} {{animatingClass}}">
 	<div id="burger" ng-click="toggleMenu()">
 		<span></span><span></span><span></span>
 	</div>
@@ -43,5 +43,6 @@
 	<script src="search/search.js"></script>
 	<script src="results/results.js"></script>
 	<script src="signup/signup.js"></script>
+	<script src="welcome/welcome.js"></script>
 </body>
 </html>
