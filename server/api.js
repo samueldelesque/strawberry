@@ -1,5 +1,5 @@
 var restify = require('restify')
-var Mongolian = require("mongolian")
+var Mongolian = require('mongolian')
 
 var server = restify.createServer()
 var dbserver = new Mongolian
