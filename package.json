@@ -28,6 +28,7 @@
   "dependencies": {
     "node-static": "~0.7.6",
     "http": "0.0.0",
-    "restify": "~2.8.5"
+    "restify": "~2.8.5",
+    "mongolian": "~0.1.18"
   }
 }
