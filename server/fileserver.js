@@ -1,10 +1,9 @@
-var http = require('http'),
-    static = require('node-static');
+var static = require('node-static');
 
-var folder = new(static.Server)('./foo');
+var file = new static.Server('./public');
 
-http.createServer(function (req, res) {
-    req.addListener('end', function () {
-        folder.serve(req, res);
-    });
-}).listen(3000);
+require('http').createServer(function (request, response) {
+    request.addListener('end', function () {
+        file.serve(request, response);
+    }).resume();
+}).listen(3089);
