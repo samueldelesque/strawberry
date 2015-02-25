@@ -7,6 +7,7 @@ angular.module('Strawberry', [
 	'Strawberry.search',
 	'Strawberry.signup',
 	'Strawberry.welcome',
+	'Strawberry.users',
 	'ui.bootstrap',
 ]).
 config(['$routeProvider', function($routeProvider) {
@@ -23,7 +24,9 @@ config(['$routeProvider', function($routeProvider) {
 		lookingForGender: ""
 	}
 
-	$scope.allResults = results_fixtures
+	$scope.allResults = []
+
+	
 
 	var interests = []
 	angular.forEach($scope.allResults,function(e,i){

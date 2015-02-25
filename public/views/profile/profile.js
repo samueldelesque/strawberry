@@ -4,7 +4,7 @@ angular.module('Strawberry.profile', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/profile', {
-	templateUrl: 'profile/profile.html',
+	templateUrl: 'views/profile/profile.html',
 	controller: 'ProfileCtrl'
   });
 }])

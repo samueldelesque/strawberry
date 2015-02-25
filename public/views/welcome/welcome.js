@@ -4,7 +4,7 @@ angular.module('Strawberry.welcome', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/', {
-	templateUrl: 'welcome/welcome.html',
+	templateUrl: 'views/welcome/welcome.html',
 	controller: 'WelcomeCtrl'
   });
 }])

@@ -4,7 +4,7 @@ angular.module('Strawberry.results', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/results/:lookingfor', {
-	templateUrl: 'results/results.html',
+	templateUrl: 'views/results/results.html',
 	controller: 'ResultsCtrl'
   });
 }])
