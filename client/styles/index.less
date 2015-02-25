@@ -6,8 +6,10 @@
 	max-width: 100%;
 }
 
-@lightPink: #dcc7d8;
-@darkPink: #805974;
+@lightPink: #fd8194;
+@darkPink: #bd4154;
+@lightPurple: #dcc7d8;
+@darkPurple: #805974;
 @lightGreen: #6ca39d;
 @darkGreen: #485355;
 @yellow: #e0d0af;
@@ -71,6 +73,8 @@ nav{
 	float: left;
 	position: fixed;
 	background: @darkPink;
+	padding-bottom: 40px;
+	overflow: auto;
 	z-index: 99;
 	top: 0;
 	left: -@nav;
@@ -122,9 +126,6 @@ nav{
 h2{
 	font-weight: 100;
 	padding: 20px 0;
-	.location{
-		color: #999;
-	}
 }
 h3{
 	text-align: center;
@@ -138,15 +139,15 @@ h3{
 }
 .menu {
 	list-style: none;
-	margin-bottom: 2em;
-	padding: 0 0 0.5em;
+	padding: 20px 0;
 }
 .menu a{
-	font-weight: bold;
-	color:#d3ffea;
+	color:white;
 	display: block;
-	padding: 8px 14px;
-	border-bottom: 1px solid #aeffd7;
+	padding: 8px 20px;
+	text-transform: uppercase;
+	font-size: 14px;
+	font-weight: 300;
 }
 main{
 	position: absolute;
@@ -161,12 +162,35 @@ footer{
 	text-align: center;
 	color:@lightPink;
 	font-size: 11px;
-	position: absolute;
-	bottom: 20px;
-	left: 20px;
-	right: 20px;
 }
-
+.interests{
+	margin: 20px 0;
+	border-top:1px solid @darkPink;
+	border-bottom:1px solid @darkPink;
+	padding-bottom: 10px;
+	h4{
+		color:@lightPink;
+		font-size: 10px;
+		text-transform: uppercase;
+		padding: 5px 10px 5px 10px;
+	}
+	.list{
+		padding: 0 10px 0 10px;
+	}
+	a{
+		padding:4px 6px;
+		line-height: 28px;
+		margin:4px;
+		white-space: nowrap;
+		background: rgba(0,0,0,0.1);
+		color:white;
+		text-decoration: none;
+		border-radius: 4px;
+		&:hover{
+			color: white;
+		}
+	}
+}
 
 .questionaire{
 	text-align: center;
@@ -246,51 +270,86 @@ footer{
 }
 #results{
 	margin:0 10%;
-	.interests{
-		a{
-			padding:4px 6px;
-			background: @darkPink;
-			color:@lightPink;
-			text-decoration: none;
-			border-radius: 4px;
-			&:hover{
-				color: white;
-			}
+	h2{
+		color:white;
+		.location{
+			color:@darkPink;
 		}
 	}
 	.item{
 		.clearfix();
-		height: 90px;
+		height: 82px;
 		position: relative;
 		overflow: hidden;
 		background: @darkPink;
-		color: @lightPink;
+		color: white;
 		margin:40px 0;
-		font-size: 28px;
 		border:5px solid rgba(0,0,0,.1);
 
-		span{
+		.col{
 			display: inline-block;
+			vertical-align: top;
 			padding: 20px;
 			&.meet{
 				background: @lightGreen;
 				color:white;
+				font-size: 28px;
+				line-height: 28px;
+				vertical-align: middle;
+			}
+			&.not-meet{
+				font-size: 28px;
+				line-height: 28px;
+				vertical-align: middle;
+				.transition(.3s);
 			}
 			&.name{
-				width: 200px;
+				width: 280px;
+				overflow: hidden;
+				height: 80px;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				font-size: 25px;
 			}
 			&.intro-text{
 				font-size: 14px;
 				width: 250px;
+				height: 80px;
+				text-overflow: ellipsis;
+				overflow: hidden;
 			}
 		}
 
 		&:hover{
 			border:5px solid rgba(0,0,0,.2);
+			.col{
+				&.not-meet{
+					.transform(scale(1.2));
+				}
+			}
 		}
 	}
 }
 @media screen and (max-width: 768px){
+	#results .item{
+		overflow: visible;
+		height: auto;
+		span{
+			display: block;
+			&.meet{
+				width: 100%;
+				text-align: center;
+				position: initial;
+			}
+			&.not-meet{
+				position: absolute;
+				top:0px;
+				right: 0px;
+			}
+		}
+	}
+}
+@media screen and (max-width: 1024px){
 	#results .item{
 		overflow: visible;
 		height: auto;
