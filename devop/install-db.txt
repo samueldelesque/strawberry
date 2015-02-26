@@ -1,0 +1,3 @@
+mongo
+use strawberry
+db.createCollection("users")

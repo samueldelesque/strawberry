@@ -6,19 +6,18 @@ var dbserver = new Mongolian
 var db = dbserver.db("strawberry")
 var users = db.collection("users")
 
-// users.insert({
-// 	name: "Samuel",
-// 	gender: "m",
-// 	age: 24,
-// 	created: new Date
-// })
-
 server.get('/users', function(req, res, next) {
 	users.find({},{_id:false,"name":true,"gender":true}).limit(100).sort({ created: 1 }).toArray(function (err, array) {
 		if(err)console.log("Failed to fetch users",err)
 		res.send(array)
 		next()
 	})
+})
+
+server.get('/users/add-dummy', function(req, res, next) {
+	users.insert(fixtures)
+	res.send({msg: "Fixtures inserted!"}})
+	next()
 })
 
 server.listen(3041, function() {
@@ -29,7 +28,7 @@ server.listen(3041, function() {
 
 
 /// FIXTURES
-/*
+var fixtures = 
 [
 	{
 		name: "Henri",
@@ -151,4 +150,3 @@ server.listen(3041, function() {
 		lookingForGender: "m"
 	}
 ]
-*/
