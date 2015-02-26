@@ -16,7 +16,7 @@ server.get('/users', function(req, res, next) {
 
 server.get('/users/add-dummy', function(req, res, next) {
 	users.insert(fixtures)
-	res.send({msg: "Fixtures inserted!"}})
+	res.send({msg: "Fixtures inserted!"})
 	next()
 })
 
