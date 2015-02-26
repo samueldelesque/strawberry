@@ -6,7 +6,6 @@ body.WelcomeCtrl{
 	.hero{
 		// background-image: url(../img/strawberries-low.jpg);
 		background-color: #fd8194;
-		background-size: cover;
 		height: 450px;
 		padding-top:120px;
 		margin:50px;
@@ -45,6 +44,14 @@ body.WelcomeCtrl{
 		.transition(.3s);
 		&:hover{
 			box-shadow: 0 0 0 10px rgba(0,0,0,0.2);
+		}
+	}
+}
+@media screen and (max-width: 768px){
+	body.WelcomeCtrl{
+		.hero{
+			margin:0;
+			padding-top: 20px;
 		}
 	}
 }

@@ -6,6 +6,8 @@ var dbserver = new Mongolian
 var db = dbserver.db("strawberry")
 var users = db.collection("users")
 
+var port = 3041
+
 server.get('/users', function(req, res, next) {
 	users.find({},{_id:false,"name":true,"gender":true}).limit(100).sort({ created: 1 }).toArray(function (err, array) {
 		if(err)console.log("Failed to fetch users",err)
@@ -20,7 +22,7 @@ server.get('/users/add-dummy', function(req, res, next) {
 	next()
 })
 
-server.listen(3041, function() {
+server.listen(port, function() {
   console.log('%s listening at %s', server.name, server.url);
 })
 
