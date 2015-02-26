@@ -1,13 +1,25 @@
-# BAM x Sample App
+# Strawberry App
 
-***Based on following Libraries***
+***FRONTEND***
 
-- Angular Seed (https://github.com/angular/angular-seed): Angular, Node etc.
-- Bootsrap CSS
-- Angular Bootstrap
-- Google Charts
+- AngularJS
+- Angular Route
+- Angular Ressource
+- Bower
+
+***BACKEND***
+
+- NodeJS
+- npm
+- Mongo
+- Mongolian
+- Restify
 
 
-***To launch app***
+***To launch the app***
 
-- ```npm start```
+[https://github.com/Unitech/pm2]
+> ```npm install```
+> ```bower update```
+> ```pm2 start node server/fileserver.js --name "Strawberry Fileserver"```
+> ```pm2 start node server/api.js --name "Strawberry API"```
