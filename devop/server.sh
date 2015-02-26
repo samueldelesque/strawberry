@@ -30,3 +30,6 @@ mkdir /var/www && cd /var/www
 
 echo "make robert the owner of app dir"
 chown -R robert:robert /var/www
+
+echo "restart server to make sure all apps are loaded and bash profile is clear"
+shutdown -r now
