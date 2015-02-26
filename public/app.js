@@ -87,6 +87,7 @@ config(['$routeProvider', function($routeProvider) {
 })
 .run(function($rootScope) {
 	$rootScope.$on('$routeChangeSuccess', function(ev,data) {   
+		ga('send', 'pageview');
 		if (data.$$route && data.$$route.controller){
 			$rootScope.controller = data.$$route.controller;
 			$rootScope.animatingClass = "intro"
