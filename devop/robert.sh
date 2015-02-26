@@ -1,3 +1,8 @@
+echo "cloning strawberry into app dir"
+git clone https://github.com/samueldelesque/strawberry.git
+
+echo "restart server to make sure all apps are loaded and bash profile is clear"
+shutdown -r now
 
 echo "entering strawberry dir"
 cd /var/www/strawberry

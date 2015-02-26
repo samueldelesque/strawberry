@@ -1,3 +1,9 @@
+echo "create www user (robert)"
+useradd -d /var/www/ -m -c "Robert WWW" robert
+
+echo "Update robert's password"
+passwd robert
+
 echo "updating packages"
 apt-get update
 
@@ -22,8 +28,5 @@ npm install -g bower
 echo "creating root app dir"
 mkdir /var/www && cd /var/www
 
-echo "cloning strawberry into app dir"
-git clone https://github.com/samueldelesque/strawberry.git
-
-echo "restart server to make sure all apps are loaded and bash profile is clear"
-shutdown -r now
+echo "make robert the owner of app dir"
+chown -R robert:robert /var/www
