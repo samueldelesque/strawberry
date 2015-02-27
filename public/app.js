@@ -7,26 +7,20 @@ angular.module('Strawberry', [
 	'Strawberry.search',
 	'Strawberry.signup',
 	'Strawberry.welcome',
-	'Strawberry.users',
+	'Strawberry.api',
 	'ui.bootstrap',
 ]).
 config(['$routeProvider', function($routeProvider) {
 	// $routeProvider.otherwise({redirectTo: '/search'});
 }])
-.controller('MainCtrl', ['$scope', '$location', function($scope,$location) {
+.controller('MainCtrl', ['$scope', '$location', 'Api', function($scope,$location,Api) {
 	$scope.body = angular.element("body")
 
-	$scope.user = (localStorage.getItem("user"))? angular.fromJson(localStorage.getItem("user")) : {
-		name: "",
-		gender: "",
-		age: 20,
-		lookingFor: "",
-		lookingForGender: ""
-	}
+	$scope.username = (localStorage.getItem("username"))? localStorage.getItem("username") : ""
 
-	$scope.allResults = []
+	$scope.user = ($scope.username)? Api.user.get({username:$scope.username}) : {}
 
-	
+	$scope.allResults = Api.users.get()
 
 	var interests = []
 	angular.forEach($scope.allResults,function(e,i){
@@ -39,7 +33,9 @@ config(['$routeProvider', function($routeProvider) {
 		$scope.body.toggleClass("show-nav")
 	}
 	$scope.saveUser = function(){
-		localStorage.setItem("user",angular.toJson($scope.user))
+		localStorage.setItem("username",$scope.user.username)
+		Api.user.create({username:$scope.user.username},$scope.user)
+		// localStorage.setItem("user",angular.toJson($scope.user))
 	}
 	$scope.search = function(){
 		if($scope.user.lookingFor){

@@ -1,8 +1,15 @@
 <div id="signup" class="questionaire">
 	<div class="row">
 		<div class="prefix">My name is</div>
-		<div class="input-box" ng-class="{'has-value': user.name}">
-			<input type="text" ng-model="user.name" placeholder="John Doe" inputfocus>
+		<div class="input-box" ng-class="{'has-value': user.fullname}">
+			<input type="text" ng-model="user.fullname" placeholder="John Doe" inputfocus>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="prefix">Username</div>
+		<div class="input-box" ng-class="{'has-value': user.username}">
+			<input type="text" ng-model="user.username" placeholder="john_doe_1986" inputfocus>
 		</div>
 	</div>
 

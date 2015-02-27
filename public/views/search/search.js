@@ -10,5 +10,5 @@ angular.module('Strawberry.search', ['ngRoute'])
 }])
 
 .controller('SearchCtrl', ['$scope', '$location', function($scope,$location) {
-	if(!$scope.user.name){$location.path("/signup")}
+	if(!$scope.user.username){$location.path("/signup")}
 }]);
