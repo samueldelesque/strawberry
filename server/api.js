@@ -4,6 +4,9 @@ var validator = require('validator')
 var extend = require('extend-object')
 var forEach = require("for-each")
 
+
+var userModel = require("models/user")
+
 var server = restify.createServer({
 	name: "Strawberry Api"
 })
@@ -32,7 +35,7 @@ server.get('/users', function(req, res, next) {
 
 server.post('/user/:id', function(req, res, next) {
 	console.log("Api::insert user")
-	var user = new user_model()
+	var user = new userModel()
 	user.set("username",req.params.username)
 	user.set("fullname",req.params.fullname)
 	user.set("gender",req.params.gender)
@@ -42,6 +45,7 @@ server.post('/user/:id', function(req, res, next) {
 	res.send({status:200,msg:"User inserted",user:user})
 	next()
 })
+
 server.get('/user/:id', function(req, res, next) {
 	console.log("Api::get user")
 	//users.insert({})
@@ -57,8 +61,8 @@ server.put('/user/:id', function(req, res, next) {
 	
 	users.findOne({username:req.params.id},function(err,data){
 		if(err)res.send({status:404,msg:"Could not find user",error:err})
-		var user = new user_model
-		extend(user,data)
+		var user = new userModel(data)
+		
 		forEach(req.params,function(e,i){
 			user.set(i,e)
 		})
@@ -100,37 +104,6 @@ var validator = {
 
 */
 
-function user_model(){
-	this.username = ""
-	this.fullname = ""
-	this.gender = ""
-	this.age = 0
-
-	this.set = function(name,value){
-		switch(name){
-			case "name":
-				if(!validator.isLength(value,3,49))return false
-			break
-			case "gender":
-				if(!validator.isIn(value,["m","f","t"]))return false
-			break
-			// case "age":
-			// 	if(!validator.isIn(value,["m","f","t"]))return false
-			// break
-		}
-		this[name] = value
-		return this
-	}
-	this.get = function(){
-		var me = this
-		return {
-			username: me.username,
-			fullname: me.fullname,
-			gender: me.gender,
-			age: me.age
-		}
-	}
-}
 
 var fixtures = {
 	names: ["Henri","Samuel","Carlotta","Josh","Kelsey","Chey","Robert","Margaret","Gabriel","Angel","Jeremy"],
@@ -142,7 +115,7 @@ function randomFromArray(array){
 	return array[Math.floor(Math.random() * array.length)]
 }
 function randomUser(){
-	return new user_model()
+	return new userModel()
 		.set("username",randomFromArray(fixtures.names).toLowerCase()+"_"+Math.floor(Math.random()*112)+Math.floor(Math.random()*11))
 		.set("fullname",randomFromArray(fixtures.names))
 		.set("gender",randomFromArray(fixtures.genders))
