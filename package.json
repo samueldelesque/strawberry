@@ -23,6 +23,7 @@
     "mongodb": "~1.4.31",
     "validator": "~3.32.0",
     "extend-object": "~1.0.0",
-    "for-each": "~0.3.2"
+    "for-each": "~0.3.2",
+    "chai": "~2.1.2"
   }
 }
