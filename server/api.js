@@ -48,7 +48,6 @@ server.post('/user/:id', function(req, res, next) {
 
 server.get('/user/:id', function(req, res, next) {
 	console.log("Api::get user")
-	//users.insert({})
 	users.findOne({username:req.params.id},{_id:false,username:true,fullname:true,gender:true,age:true},function(err,user){
 		if(err)res.send({status:404,msg:"Could not find user",error:err})
 		res.send({status:200,user:user})
