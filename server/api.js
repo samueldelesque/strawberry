@@ -5,7 +5,7 @@ var extend = require('extend-object')
 var forEach = require("for-each")
 
 
-var userModel = require("models/user")
+var userModel = require("./models/user")
 
 var server = restify.createServer({
 	name: "Strawberry Api"
