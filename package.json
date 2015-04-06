@@ -24,6 +24,7 @@
     "validator": "~3.32.0",
     "extend-object": "~1.0.0",
     "for-each": "~0.3.2",
-    "chai": "~2.1.2"
+    "chai": "~2.1.2",
+    "sessions": "0.0.2-7"
   }
 }

@@ -1,20 +1,18 @@
-var restify = require('restify')
-var Mongolian = require('mongolian')
-var validator = require('validator')
-var extend = require('extend-object')
-var forEach = require("for-each")
+var Restify = require('restify'),
+	Sessions = require("sessions"),
+	Mongolian = require('mongolian'),
+	validator = require('validator'),
+	forEach = require("for-each"),
 
-
-var userModel = require("./models/user")
-
-var server = restify.createServer({
-	name: "Strawberry Api"
-})
-var dbserver = new Mongolian
-var db = dbserver.db("strawberry")
-var users = db.collection("users")
-
-var port = 3041
+    sessionHandler = new Sessions(),
+	userModel = require("./models/user"),
+	server = Restify.createServer({
+		name: "Strawberry Api"
+	}),
+	dbserver = new Mongolian,
+	db = dbserver.db("strawberry"),
+	users = db.collection("users"),
+	port = 3041
 
 server.use(
 	function crossOrigin(req,res,next){
@@ -23,12 +21,46 @@ server.use(
 		return next()
 	}
 )
-server.use(restify.bodyParser())
+server.use(Restify.bodyParser())
+
+var required = function(fields,req,res,next){
+	forEach(fields,function(e,i){
+		if(!req.params[i]){
+			res.send({status:403,msg:i+" is required!"})
+			next()
+		}
+		else{
+			switch(e){
+				case "string":
+					if(typeof(req.params[i]) != "string" || req.params[i].length < 1){
+						res.send({status:403,msg:i+" is not correct (type = "+typeof(req.params[i])+", length = "+req.params[i].length+")!"})
+						next()
+					}
+				break;
+			}
+		}
+	})
+}
 
 server.get('/users', function(req, res, next) {
 	users.find({},{_id:false,username:true,fullname:true,gender:true,age:true}).limit(120).sort({ created: 1 }).toArray(function (err, array) {
 		if(err)console.log("Failed to fetch users",err)
 		res.send(array)
+		next()
+	})
+})
+
+server.post('/login',function(req, res, next){
+	// var session = sessionHandler.httpRequest(req, res);
+	required({password:"string",username:"string"},req,res,next)
+
+	users.findOne({username:req.params.username},{_id:false,username:true,fullname:true,gender:true,age:true,password:true},function(err,user){
+		console.log("Finding user",user)
+		if(err)res.send({status:404,msg:"Could not find user",error:err})
+		if(req.params.password == user.password){
+			// session
+			res.send({status:200,user:user})
+		}
 		next()
 	})
 })
