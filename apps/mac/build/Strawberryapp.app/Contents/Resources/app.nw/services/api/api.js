@@ -3,7 +3,8 @@
 angular.module('Strawberry.api', ['ngResource'])
 
 .factory('Api', ['$resource', function($resource){
-	var api_url = "http://localhost:3041/"
+	// var api_url = "http://localhost:3041/"
+	var api_url = "http://api.strawberry.li/"
 	return {
 		users: $resource(api_url+'users', {}, {
 			get: {mexthod:'GET', params:{}, isArray:true}

@@ -22,6 +22,24 @@ config(['$routeProvider', function($routeProvider) {
 
 	$scope.allResults = Api.users.get()
 
+	$scope.isDesktop = true
+
+
+	if($scope.isDesktop){
+		$scope.gui = require('nw.gui')
+		$scope.fs = require('fs')
+
+		$scope.gui.App.on('open', function(cmdline) {
+			console.log('command line: ' + cmdline);
+		})
+
+		$scope.fs.writeFile('/Users/sdelesque/Pixyt/test.txt','test',function(err,data){
+			if(err){$("body").html("An error occured");return;}
+			console.log(data);
+		})
+
+	}
+
 	var interests = []
 	angular.forEach($scope.allResults,function(e,i){
 		if(interests.indexOf(e.lookingFor) == -1) interests.push(e.lookingFor)

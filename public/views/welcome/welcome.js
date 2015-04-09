@@ -10,5 +10,7 @@ angular.module('Strawberry.welcome', ['ngRoute'])
 }])
 
 .controller('WelcomeCtrl', ['$scope', '$routeParams', '$rootScope', function($scope,$routeParams,$rootScope) {
-	
+	// console.log($scope.allResults);
+	// window.test = $scope.allResults
+	// $scope.userCount = $scope.allResults.length
 }]);
