@@ -1,0 +1,24 @@
+{
+	"name": "Pixyt app",
+	"main": "index.html",
+	"repository" : { 
+		"type" : "git", 
+		"url" : "https://github.com/samueldelesque/pixyt.app"
+	},
+	"dependencies": {
+		"ncp": "0.5.x",
+		"path-extra": "^0.2.1",
+		"rimraf": "2.2.x",
+		"underscore": "^1.6.0",
+		"zip-dir": "0.1.x"
+	},
+	"window": {
+		"title": "Pixyt",
+		"frame": false,
+		"toolbar": false,
+		"width": 280,
+		"height": 400,
+		"position": "top right",
+		"resizable": false
+	}
+}
