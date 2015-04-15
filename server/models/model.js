@@ -12,6 +12,7 @@ Model.prototype.set = function(name, value){
 	return this
 }
 Model.prototype.get = function(name){
+	if(!name) return this.data
 	return this.data[name]
 }
 Model.prototype.isset = function(name){

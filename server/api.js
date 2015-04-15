@@ -1,18 +1,31 @@
 var Restify = require('restify'),
-	Sessions = require("sessions"),
+	// Sessions = require("sessions"),
+    Redis = require('redis');
 	Mongolian = require('mongolian'),
+	ObjectId = require('mongolian').ObjectId,
 	validator = require('validator'),
 	forEach = require("for-each"),
+	Crypto = require('crypto'),
 
-    sessionHandler = new Sessions(),
+    // sessionHandler = new Sessions(),
 	userModel = require("./models/user"),
 	server = Restify.createServer({
 		name: "Strawberry Api"
 	}),
 	dbserver = new Mongolian,
+	sessionStore = Redis.createClient(6379,"127.0.0.1"),
 	db = dbserver.db("strawberry"),
 	users = db.collection("users"),
 	port = 3041
+
+sessionStore.on('connect', function(err) {
+    console.log('connected');
+
+	sessionStore.get("00000001",function(err,data){
+		if(err){console.error("Failed to fetch session"); return}
+		console.log("SessionData",data)
+	})
+})
 
 server.use(
 	function crossOrigin(req,res,next){
@@ -52,30 +65,79 @@ server.get('/users', function(req, res, next) {
 
 server.post('/login',function(req, res, next){
 	// var session = sessionHandler.httpRequest(req, res);
-	required({password:"string",username:"string"},req,res,next)
+	required({password:"string",email:"string"},req,res,next)
 
-	users.findOne({username:req.params.username},{_id:false,username:true,fullname:true,gender:true,age:true,password:true},function(err,user){
-		console.log("Finding user",user)
-		if(err)res.send({status:404,msg:"Could not find user",error:err})
-		if(req.params.password == user.password){
+	users.findOne({email:req.params.email},{_id:true,email:true,fullname:true,gender:true,birthdate:true,password:true},function(err,data){
+		if(err){res.send({status:404,msg:"Could not find user",error:err});next();return}
+		var user = new userModel(data)
+		if(req.params.password == user.get("password")){
 			// session
-			res.send({status:200,user:user})
+			var userData = user.get()
+			delete userData.password
+			var now = new Date(),
+				tmp = now.getTime() + Math.floor(Math.random()*1000) + 1,
+				sessionid = Crypto.createHash('md5').update(tmp.toString()).digest('hex')
+
+			sessionStore.set(sessionid,data._id,function(err,data){
+				if(err){console.error("Failed to set session"); next();return;}
+				console.log("Session",sessionid,data._id)
+				res.send({status:200,user:userData,sessionid:sessionid})
+				next()
+			})
+			
 		}
 		next()
 	})
 })
 
-server.post('/user/:id', function(req, res, next) {
+server.put('/user', function(req, res, next) {
 	console.log("Api::insert user")
-	var user = new userModel()
-	user.set("username",req.params.username)
-	user.set("fullname",req.params.fullname)
-	user.set("gender",req.params.gender)
-	user.set("age",req.params.age)
 
-	users.insert(user)
-	res.send({status:200,msg:"User inserted",user:user})
-	next()
+	if(!req.params.sessionid){
+		console.log("No SessionId passed for update")
+		res.send({status:401,msg:"You must pass a sessionid to update user!"})
+		next()
+		return
+	}
+
+	sessionStore.get(req.params.sessionid,function(err,uid){
+		var user = new userModel(),
+			allowed = user.allowedFields()
+		forEach(req.params,function(value,name){
+			if(allowed.indexOf(name) > -1)
+				user.set(name,value)
+		})
+		console.log("Update ",uid,ObjectId)
+		users.update({_id:ObjectId(uid)},{$set:user.get()})
+		res.send({status:200,user:user.get()})
+		next()
+	})
+})
+
+server.post('/user', function(req, res, next) {
+	console.log("Api::update user")
+
+	var user = new userModel(),errors=[]
+	if(user.set("fullname",req.params.fullname) === false) errors.push("fullname")
+	else if(user.set("gender",req.params.gender) === false) errors.push("gender")
+	else if(user.set("password",req.params.password) === false) errors.push("password")
+	else if(user.set("birthdate",req.params.birthdate) === false) errors.push("birthdate")
+	else if(req.params.phone && user.set("phone",req.params.phone) === false) errors.push("phone")
+	else if(user.set("email",req.params.email) === false) errors.push("email")
+	
+	if(errors.length > 0){
+		res.send({status:403,msg:"Invalid fields",errors:errors})
+		next()
+	}
+	else{
+		if(users.find({email:req.params.email}).limit(1)){
+			res.send({status:403,msg:"An account associated with that email already exist."});return;
+		}
+
+		users.insert(user.get())
+		res.send({status:200,msg:"User inserted",user:user.get()})
+		next()
+	}
 })
 
 server.get('/user/:id', function(req, res, next) {

@@ -26,17 +26,17 @@ config(['$routeProvider', function($routeProvider) {
 
 
 	if($scope.isDesktop){
-		$scope.gui = require('nw.gui')
-		$scope.fs = require('fs')
+		// $scope.gui = require('nw.gui')
+		// $scope.fs = require('fs')
 
-		$scope.gui.App.on('open', function(cmdline) {
-			console.log('command line: ' + cmdline);
-		})
+		// $scope.gui.App.on('open', function(cmdline) {
+		// 	console.log('command line: ' + cmdline);
+		// })
 
-		$scope.fs.writeFile('/Users/sdelesque/Pixyt/test.txt','test',function(err,data){
-			if(err){$("body").html("An error occured");return;}
-			console.log(data);
-		})
+		// $scope.fs.writeFile('/Users/sdelesque/Pixyt/test.txt','test',function(err,data){
+		// 	if(err){$("body").html("An error occured");return;}
+		// 	console.log(data);
+		// })
 
 	}
 

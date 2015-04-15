@@ -17,14 +17,15 @@
     "update-index-async": "node -e \"require('shelljs/global'); sed('-i', /\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/, '//@@NG_LOADER_START@@\\n' + sed(/sourceMappingURL=angular-loader.min.js.map/,'sourceMappingURL=bower_components/angular-loader/angular-loader.min.js.map','client/bower_components/angular-loader/angular-loader.min.js') + '\\n//@@NG_LOADER_END@@', 'client/index-async.html');\""
   },
   "dependencies": {
-    "node-static": "~0.7.6",
-    "restify": "~2.8.5",
-    "mongolian": "~0.1.18",
-    "mongodb": "~1.4.31",
-    "validator": "~3.32.0",
+    "chai": "~2.1.2",
     "extend-object": "~1.0.0",
     "for-each": "~0.3.2",
-    "chai": "~2.1.2",
-    "sessions": "0.0.2-7"
+    "mongodb": "~1.4.31",
+    "mongolian": "~0.1.18",
+    "node-static": "~0.7.6",
+    "redis": "^0.12.1",
+    "restify": "~2.8.5",
+    "sessions": "0.0.2-7",
+    "validator": "~3.32.0"
   }
 }
