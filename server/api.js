@@ -68,7 +68,8 @@ server.post('/login',function(req, res, next){
 	required({password:"string",email:"string"},req,res,next)
 
 	users.findOne({email:req.params.email},{_id:true,email:true,fullname:true,gender:true,birthdate:true,password:true},function(err,data){
-		if(err){res.send({status:404,msg:"Could not find user",error:err});next();return}
+		if(err || !data){res.send({status:404,msg:"Could not find user",error:err});next();return}
+		console.log("Attempting user login",req.email,req.password,data.password)
 		var user = new userModel(data)
 		if(req.params.password == user.get("password")){
 			// session
@@ -115,7 +116,7 @@ server.put('/user', function(req, res, next) {
 })
 
 server.post('/user', function(req, res, next) {
-	console.log("Api::update user")
+	console.log("Api::insert user")
 
 	var user = new userModel(),errors=[]
 	if(user.set("fullname",req.params.fullname) === false) errors.push("fullname")
@@ -130,7 +131,8 @@ server.post('/user', function(req, res, next) {
 		next()
 	}
 	else{
-		if(users.find({email:req.params.email}).limit(1)){
+		console.log(users.find({email:req.params.email}).limit(1));
+		if(users.find({email:req.params.email}).limit(1).length > 0){
 			res.send({status:403,msg:"An account associated with that email already exist."});return;
 		}
 

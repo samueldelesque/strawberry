@@ -26,7 +26,8 @@ var User = Model.extend({
 				if(this.getAge(value) < 18) return false
 			break
 			case "phone":
-				if(!validator.isMobilePhone(value,"en-US")) return false
+				if(value.match(/^[2-9]\d{2}[\- ]?\d{3}[\- ]?\d{4}$/i) == null) return false
+				// if(!validator.isMobilePhone(value,"en-US")) return false
 			break
 			default:
 				console.log(name,"Not a valid User field!");
