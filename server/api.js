@@ -18,6 +18,8 @@ var Restify = require('restify'),
 	users = db.collection("users"),
 	port = 3041
 
+console.log(new ObjectId())
+
 sessionStore.on('connect', function(err) {
     console.log('connected');
 
@@ -64,11 +66,13 @@ server.get('/users', function(req, res, next) {
 })
 
 server.post('/login',function(req, res, next){
+	console.log("Login",req.params)
 	// var session = sessionHandler.httpRequest(req, res);
 	required({password:"string",email:"string"},req,res,next)
 
 	users.findOne({email:req.params.email},{_id:true,email:true,fullname:true,gender:true,birthdate:true,password:true},function(err,data){
 		if(err){res.send({status:404,msg:"Could not find user",error:err});next();return}
+		console.log("User",data)
 		var user = new userModel(data)
 		if(req.params.password == user.get("password")){
 			// session
@@ -79,12 +83,15 @@ server.post('/login',function(req, res, next){
 				sessionid = Crypto.createHash('md5').update(tmp.toString()).digest('hex')
 
 			sessionStore.set(sessionid,data._id,function(err,data){
-				if(err){console.error("Failed to set session"); next();return;}
+				if(err){console.error("Failed to set session"); res.send({status:403,message:"An error occured"}); next();return;}
 				console.log("Session",sessionid,data._id)
 				res.send({status:200,user:userData,sessionid:sessionid})
 				next()
 			})
 			
+		}
+		else{
+			res.send({status:301,message:"Invalid email or password"})
 		}
 		next()
 	})
@@ -107,8 +114,8 @@ server.put('/user', function(req, res, next) {
 			if(allowed.indexOf(name) > -1)
 				user.set(name,value)
 		})
-		console.log("Update ",uid,ObjectId)
-		users.update({_id:ObjectId(uid)},{$set:user.get()})
+		// console.log("Update ",uid,ObjectId)
+		users.update({_id:new ObjectId(uid)},{$set:user.get()})
 		res.send({status:200,user:user.get()})
 		next()
 	})

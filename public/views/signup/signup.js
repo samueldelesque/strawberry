@@ -11,7 +11,7 @@ angular.module('Strawberry.signup', ['ngRoute'])
 
 .controller('SignupCtrl', ['$scope', '$routeParams', '$location', function($scope,$routeParams,$location) {
 	$scope.validateUser = function(){
-		$scope.saveUser()
-		$location.path('/search')
+		Api.user.create($scope.user)
+		// $location.path('/search')
 	}
 }]);
