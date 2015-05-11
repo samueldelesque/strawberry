@@ -5,15 +5,16 @@
 	angular.module('Strawberry', [
 		'ngRoute',
 		'Strawberry.api',
-		// 'Strawberry.results',
-		// 'Strawberry.search',
+		'Strawberry.session',
+		'Strawberry.results',
+		'Strawberry.search',
 		// 'Strawberry.signup',
 		// 'Strawberry.welcome',
 		'Strawberry.login',
 		'ui.bootstrap',
 	]).
 	config(function($routeProvider) {
-		// $routeProvider.otherwise({redirectTo: '/search'});
+		$routeProvider.otherwise({redirectTo: '/'});
 	})
 	.controller('MainCtrl', function($scope,$location) {
 		$scope.body = angular.element("body")

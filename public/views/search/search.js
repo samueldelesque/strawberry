@@ -1,14 +1,27 @@
-'use strict';
+(function(){
+	'use strict';
 
-angular.module('Strawberry.search', ['ngRoute'])
+	angular.module('Strawberry.search', [
+		'ngRoute',
+		'Strawberry.api',
+		'Strawberry.session'
+	])
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/search', {
-	templateUrl: 'views/search/search.html',
-	controller: 'SearchCtrl'
-  });
-}])
+	.config(function($routeProvider) {
+	  $routeProvider.when('/search', {
+		templateUrl: 'views/search/search.html',
+		controller: 'searchCtrl'
+	  });
+	})
 
-.controller('SearchCtrl', ['$scope', '$location', function($scope,$location) {
-	if(!$scope.user.username){$location.path("/signup")}
-}]);
+	.controller('searchCtrl', function($scope, $location, Session, Api) {
+		if(!Session.get("user")){
+			console.error("Please sign in first")
+			$location.path("/login")
+		}
+		else{
+			console.log(Session.get("user"))
+			$scope.user = Session.get("user")
+		}
+	})
+})()
