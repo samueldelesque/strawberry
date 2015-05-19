@@ -31,9 +31,9 @@ Strawberry is a dating app using Angular which focuses on the content of the dat
 
 > ```bower update```
 
-> ```pm2 start node server/fileserver.js --name "Strawberry Fileserver"```
+> ```pm2 start server/fileserver.js --name "Strawberry Fileserver"```
 
-> ```pm2 start node server/api.js --name "Strawberry API"```
+> ```pm2 start server/api.js --name "Strawberry API"```
 
 
 
