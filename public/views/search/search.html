@@ -1,8 +1,8 @@
 <div id="search" class="questionaire">
 	<div class="row">
-		<div class="prefix">I want to</div>
-		<div class="input-box" ng-class="{'has-value': user.lookingFor}">
-			<input type="text" ng-model="user.lookingFor" id="searchField" inputfocus>
+		<div class="prefix">Hi {{user.fullname}} - what would you like to do?</div>
+		<div class="input-box" ng-class="{'has-value': lookingFor}">
+			<input type="text" ng-model="lookingFor" id="searchField" inputfocus>
 			<div class="typewriter placeholder" typewriter data-typer-targets="drink wine, eat cheese, watch a movie, go to MoMA, have a 3sum, have a coffee, make some art, have a date, lick a foot"></div>
 		</div>
 	</div>

@@ -9,9 +9,9 @@ angular.module('Strawberry.signup', ['ngRoute'])
   });
 }])
 
-.controller('SignupCtrl', ['$scope', '$routeParams', '$location', function($scope,$routeParams,$location) {
+.controller('SignupCtrl', function($scope,$routeParams,$location) {
 	$scope.validateUser = function(){
 		Api.user.create($scope.user)
 		// $location.path('/search')
 	}
-}]);
+});

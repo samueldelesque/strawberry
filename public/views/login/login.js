@@ -3,7 +3,8 @@
 
 	angular.module('Strawberry.login', [
 		'ngRoute',
-		'Strawberry.api'
+		'Strawberry.api',
+		'Strawberry.session'
 	])
 
 	.config(function($routeProvider) {
@@ -13,10 +14,14 @@
 	  });
 	})
 
-	.controller('loginCtrl', function($scope,$routeParams,$location, Api) {
+	.controller('loginCtrl', function($scope,$routeParams,$location, Api, Session) {
 		$scope.signIn = function(){
-			Api.login($scope.user).then(function(user){
-				console.log(user)
+			Api.login($scope.user).success(function(response){
+				Session.set("user",response.user)
+				Session.set("sessionid",response.sessionid)
+				$location.path('/search')
+			}).error(function(err,data){
+				alert("An error occured, please try again later")
 			})
 		}
 	})

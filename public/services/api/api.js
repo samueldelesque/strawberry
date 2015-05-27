@@ -27,18 +27,7 @@
 			// })
 		this.login = function(user){
 			if(!user)user = {}
-			var deferred = $q.defer();
-			$http.post(api_url+"/login",user).success(function(err,data){
-				if(err) deferred.reject("Query failed",err)
-				else{
-					console.log(data)
-					deferred.resolve(data)
-				}
-			}).error(function(err){
-				alert("Login Failed!")
-				deferred.reject(err)
-			})
-			return deferred.promise;
+			return $http.post(api_url+"/login",user)
 		}
 	})
 })()
