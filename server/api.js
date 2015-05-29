@@ -1,13 +1,13 @@
 var Restify = require('restify'),
 	// Sessions = require("sessions"),
-    Redis = require('redis');
+	Redis = require('redis'),
 	Mongolian = require('mongolian'),
 	ObjectId = require('mongolian').ObjectId,
 	validator = require('validator'),
 	forEach = require("for-each"),
 	Crypto = require('crypto'),
 
-    // sessionHandler = new Sessions(),
+	// sessionHandler = new Sessions(),
 	userModel = require("./models/user"),
 	server = Restify.createServer({
 		name: "Strawberry Api"
@@ -24,13 +24,6 @@ sessionStore.on('connect', function(err) {
     console.log('Session server connected');
 })
 
-// server.use(
-// 	function crossOrigin(req,res,next){
-// 		res.header("Access-Control-Allow-Origin", "*")
-// 		res.header("Access-Control-Allow-Headers", "X-Requested-With")
-// 		return next()
-// 	}
-// )
 server.use(Restify.queryParser())
 server.use(Restify.bodyParser())
 server.use(Restify.CORS())
@@ -194,7 +187,7 @@ server.post('/user', function(req, res, next) {
 		return next()
 	}
 	else{
-		console.log(users.find({email:req.params.email}).limit(1));
+		// console.log(users.find({email:req.params.email}).limit(1));
 		if(users.find({email:req.params.email}).limit(1).length > 0){
 			res.send({status:403,msg:"An account associated with that email already exist."});return;
 		}
