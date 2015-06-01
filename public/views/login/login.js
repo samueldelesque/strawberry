@@ -3,18 +3,19 @@
 
 	angular.module('Strawberry.login', [
 		'ngRoute',
+		'ngCookie',
 		'Strawberry.api',
 		'Strawberry.session'
 	])
 
 	.config(function($routeProvider) {
-	  $routeProvider.when('/login', {
-		templateUrl: 'views/login/login.html',
-		controller: 'loginCtrl'
-	  });
+		$routeProvider.when('/login', {
+			templateUrl: 'views/login/login.html',
+			controller: 'loginCtrl'
+		});
 	})
 
-	.controller('loginCtrl', function($scope,$routeParams,$location, Api, Session) {
+	.controller('loginCtrl', function($scope,$routeParams,$location, $cookie, Api, Session) {
 		$scope.signIn = function(){
 			Api.login($scope.user).success(function(response){
 				Session.set("user",response.user)

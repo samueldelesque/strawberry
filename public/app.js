@@ -4,6 +4,7 @@
 	// Declare app level module which depends on views, and components
 	angular.module('Strawberry', [
 		'ngRoute',
+		'ngCookies',
 		'Strawberry.api',
 		'Strawberry.session',
 		'Strawberry.results',
@@ -13,9 +14,11 @@
 		'Strawberry.login',
 		'ui.bootstrap',
 	]).
+
 	config(function($routeProvider) {
 		$routeProvider.otherwise({redirectTo: '/'});
 	})
+	
 	.controller('MainCtrl', function($scope,$location) {
 		$scope.body = angular.element("body")
 

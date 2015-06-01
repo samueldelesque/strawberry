@@ -11,9 +11,6 @@
 		// 		get: {method:'GET', params:{}, isArray:true}
 		// 	})
 		// }
-		this.sessionID = function(){
-			return (localStorage.getItem("sessionid"))? localStorage.getItem("sessionid") : false
-		}
 			// users: $resource(api_url+'users', {}, {
 			// 	get: {method:'GET', params:{}, isArray:true}
 			// }),

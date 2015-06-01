@@ -7,6 +7,10 @@
 
 		var sessionData = {}
 
+		this.sessionID = function(sessionid){
+			if(!sessionid) return (localStorage.getItem("sessionid"))? localStorage.getItem("sessionid") : false
+			return localStorage.setItem("sessionid",sessionid)
+		}
 		this.set = function(name,value){
 			sessionData[name] = value
 		}
