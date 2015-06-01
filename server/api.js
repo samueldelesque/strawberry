@@ -1,13 +1,13 @@
 var Restify = require('restify'),
 	// Sessions = require("sessions"),
-    Redis = require('redis');
+	Redis = require('redis'),
 	Mongolian = require('mongolian'),
 	ObjectId = require('mongolian').ObjectId,
 	validator = require('validator'),
 	forEach = require("for-each"),
 	Crypto = require('crypto'),
 
-    // sessionHandler = new Sessions(),
+	// sessionHandler = new Sessions(),
 	userModel = require("./models/user"),
 	server = Restify.createServer({
 		name: "Strawberry Api"
@@ -24,13 +24,6 @@ sessionStore.on('connect', function(err) {
     console.log('Session server connected');
 })
 
-// server.use(
-// 	function crossOrigin(req,res,next){
-// 		res.header("Access-Control-Allow-Origin", "*")
-// 		res.header("Access-Control-Allow-Headers", "X-Requested-With")
-// 		return next()
-// 	}
-// )
 server.use(Restify.queryParser())
 server.use(Restify.bodyParser())
 server.use(Restify.CORS())
@@ -75,42 +68,39 @@ server.post('/login',function(req, res, next){
 	required({password:"string",email:"string"},req,res,next)
 
 	users.findOne({email:req.params.email},{_id:true,email:true,fullname:true,gender:true,birthdate:true,password:true},function(err,data){
-		if(err){
+		if(err || !data){
 			res.statusCode = 404
 			res.send({msg:"Could not find user",error:err})
 			return next()
 		}
-		else{
-			console.log("User",data)
-			var user = new userModel(data)
-			if(req.params.password == user.get("password")){
-				// session
-				var userData = user.get()
-				delete userData.password
-				var now = new Date(),
-					tmp = now.getTime() + Math.floor(Math.random()*1000) + 1,
-					sessionid = Crypto.createHash('md5').update(tmp.toString()).digest('hex')
+		console.log("Attempting user login",req.email,req.password,data.password)
+		var user = new userModel(data)
+		if(req.params.password == user.get("password")){
+			var userData = user.get()
+			delete userData.password
+			var now = new Date(),
+				tmp = now.getTime() + Math.floor(Math.random()*1000) + 1,
+				sessionid = Crypto.createHash('md5').update(tmp.toString()).digest('hex')
 
-				sessionStore.set(sessionid,data._id,function(err,data){
-					if(err){
-						console.error("Failed to set session")
-						res.statusCode = 403
-						res.send({message:"An error occured"})
-						return next()
-					}
-					else{
-						console.log("Session",sessionid,data._id)
-						res.send({user:userData,sessionid:sessionid})
-						return next()
-					}
-				})
-				
-			}
-			else{
-				res.statusCode = 401
-				res.send({message:"Invalid email or password"})
-				return next()
-			}
+			sessionStore.set(sessionid,data._id,function(err,data){
+				if(err){
+					console.error("Failed to set session")
+					res.statusCode = 403
+					res.send({message:"An error occured"})
+					return next()
+				}
+				else{
+					console.log("Session",sessionid,data._id)
+					res.send({user:userData,sessionid:sessionid})
+					return next()
+				}
+			})
+			
+		}
+		else{
+			res.statusCode = 401
+			res.send({message:"Invalid email or password"})
+			return next()
 		}
 	})
 })
@@ -182,7 +172,7 @@ server.put('/user', function(req, res, next) {
 })
 
 server.post('/user', function(req, res, next) {
-	console.log("Api::update user")
+	console.log("Api::insert user")
 
 	var user = new userModel(),errors=[]
 	if(user.set("fullname",req.params.fullname) === false) errors.push("fullname")
@@ -197,7 +187,8 @@ server.post('/user', function(req, res, next) {
 		return next()
 	}
 	else{
-		if(users.find({email:req.params.email}).limit(1)){
+		// console.log(users.find({email:req.params.email}).limit(1));
+		if(users.find({email:req.params.email}).limit(1).length > 0){
 			res.send({status:403,msg:"An account associated with that email already exist."});return;
 		}
 
