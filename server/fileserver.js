@@ -1,5 +1,5 @@
 var static = require('node-static')
-var file = new static.Server('./public')
+var file = new static.Server('./public/dist')
 var port = 3089
 
 require('http').createServer(function (request, response) {

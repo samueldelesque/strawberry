@@ -21,6 +21,7 @@
     "chai": "~2.x",
     "extend-object": "~1.x",
     "for-each": "~0.3.x",
+    "gulp": "^3.x",
     "mongodb": "~1.x",
     "mongolian": "~0.1.x",
     "node-static": "~0.7.x",
@@ -28,5 +29,11 @@
     "restify": "~2.x",
     "sessions": "~0.x",
     "validator": "~3.x"
+  },
+  "devDependencies": {
+    "gulp-cssmin": "^0.1.7",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.2.0",
+    "vinyl-buffer": "^1.0.0"
   }
 }
