@@ -1,0 +1,16 @@
+.row{
+	margin:20px 0;
+	text-align: right;
+	&:first-child{
+		border-top:none;
+	}
+}
+.container{
+	margin: 0 auto;
+	max-width: @maxWidth;
+}
+@media screen and (max-width:640px){
+	.row{
+		margin: 15px 0;
+	}
+}

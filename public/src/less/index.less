@@ -1,11 +1,18 @@
 @import "normalize.less";
 @import "elements.less";
+@import "forms.less";
+@import "grid.less";
+
+// Pages
 @import "welcome.less";
+@import "login.less";
 
 * {
 	box-sizing: border-box;
 	max-width: 100%;
 }
+
+@maxWidth: 900px;
 
 @lightPink: #fd8194;
 @darkPink: #bd4154;
@@ -15,6 +22,9 @@
 @darkGreen: #485355;
 @yellow: #e0d0af;
 @nav: 220px;
+
+@mainColor: #fd8194;
+@darkerColor: #bd4154;
 
 
 @font-face {
@@ -139,18 +149,22 @@ h3{
 	font-size: 14px;
 	font-weight: 300;
 }
+header{
+	background-color: rgba(255,255,255,.2);
+	padding: 20px;
+	h1{
+		margin: 0;
+		color: rgba(0,0,0,.2);
+		font-weight: 100;
+	}
+}
 main{
-	position: absolute;
-	top:0;
-	left: 0;
-	bottom: 0;
-	overflow:auto;
-	right: 0;
+	padding: 20px;
 	.transition(.2s);
 }
 footer{
 	text-align: center;
-	color:@lightPink;
+	color:rgba(255,255,255,.4);
 	font-size: 11px;
 }
 .interests{
@@ -179,84 +193,6 @@ footer{
 		&:hover{
 			color: white;
 		}
-	}
-}
-
-.questionaire{
-	text-align: center;
-	&#search{margin: 220px 10%;}
-	.row{
-		margin:20px auto;
-		max-width: 650px;
-		padding:20px 0;
-		text-align: right;
-		border-top:4px dashed @darkPink;
-		&:first-child{
-			border-top:none;
-		}
-	}
-	.prefix{
-		font-size: 28px;
-		font-weight: bold;
-		padding: 14px;
-		color: @darkPink;
-		display: inline-block;
-	}
-	.input-box{
-		width: 400px;
-		position: relative;
-		display: inline-block;
-		background: #fff;
-		input,select,textarea,.placeholder,button{
-			padding: 14px 20px;
-			font-size: 28px;
-			font-weight: bold;
-			text-align: left;
-			width: 100%;
-			background: transparent;
-			outline: none;
-			box-shadow: none;
-			border:none;
-		}
-		.placeholder{
-			position: absolute;
-			color: @darkPink;
-			z-index: 0;
-			top:0;
-			left: 0;
-			right: 0;
-			bottom: 0;
-		}
-		input,select,textarea{
-			position: relative;
-			z-index: 2;
-			color: transparent;
-		}
-		&.has-value{
-			.placeholder{
-				display: none;
-			}
-			input{
-				color: @darkPink;
-			}
-		}
-		select{
-			height: 60px;
-			color: @darkPink;
-		}
-	}
-	button.cta.submit{
-		width: 100%;
-		text-align: center;
-		padding: 14px 20px;
-		font-size: 28px;
-		font-weight: bold;
-		outline: none;
-		box-shadow: none;
-		border:none;
-		background: @darkPink;
-		color:@lightPink;
-		.transition(.2s);
 	}
 }
 #results{

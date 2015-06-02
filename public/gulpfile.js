@@ -55,10 +55,10 @@ function bundle() {
 }
 
 gulp.task("watch", function() {
-	gulp.watch("./src/html/*.html", ["html"])
-	gulp.watch("./src/less/*.less", ["less"])
-	gulp.watch("./src/fonts/*", ["fonts"])
-	gulp.watch("./src/img/*", ["img"])
+	gulp.watch("./src/html/**/*.html", ["html"])
+	gulp.watch("./src/less/**/*.less", ["less"])
+	gulp.watch("./src/fonts/**/*", ["fonts"])
+	gulp.watch("./src/img/**/*", ["img"])
 });
 
 gulp.task("default",["html","less","fonts","img","watch","js"])

@@ -8,7 +8,7 @@ require("angular-cookies");
 require("./services");
 require("./views");
 
-var app = angular.module("Strawberry", [
+module.exports = angular.module("Strawberry", [
 		"ui.router",
 		// "ngCookies",
 		"Strawberry.api",
@@ -26,6 +26,7 @@ var app = angular.module("Strawberry", [
 	})
 
 	.controller("MainCtrl", function($scope,$location) {
+		// Clear temp cache
 		$scope.body = angular.element(document.body)
 		$scope.toggleMenu = function(){
 			$scope.body.toggleClass("show-nav")
@@ -56,10 +57,10 @@ var app = angular.module("Strawberry", [
 	.directive("inputfocus", function() {
 		return {
 			link: function($scope, $elm, $attrs) {
-				$elm.focus(function(){
+				$elm.on("focus",function(){
 					$scope.body.addClass("input-focus")
 				})
-				$elm.blur(function(){
+				$elm.on("blur",function(){
 					($elm.val() && $elm.parent().addClass("has-value"))
 					$scope.body.removeClass("input-focus")
 				})
@@ -75,6 +76,11 @@ var app = angular.module("Strawberry", [
 				setTimeout(function(){$rootScope.animatingClass = ""},500);
 			}
 		})
+	})
+	.run(function($rootScope, $templateCache) {
+		$rootScope.$on('$viewContentLoaded', function() {
+			$templateCache.removeAll();
+		});
 	});
 },{"./services":8,"./views":10,"angular":6,"angular-cookies":3,"angular-ui-router":4}],2:[function(require,module,exports){
 /**
@@ -32912,101 +32918,95 @@ require('./angular');
 module.exports = angular;
 
 },{"./angular":5}],7:[function(require,module,exports){
-(function(){
-	'use strict';
+angular.module('Strawberry.api',[])
 
-	angular.module('Strawberry.api',[])
+.service('Api', function($http, $q){
+	var api_url = "http://localhost:3041"
 
-	.service('Api', function($http, $q){
-		var api_url = "http://localhost:3041"
+	// this.getUsers = function(){
+	// 	return $resource(api_url+'users', {}, {
+	// 		get: {method:'GET', params:{}, isArray:true}
+	// 	})
+	// }
+		// users: $resource(api_url+'users', {}, {
+		// 	get: {method:'GET', params:{}, isArray:true}
+		// }),
+		// user: $resource(api_url+'user/:username', {username:'@username'}, {
+		// 	'get': {method:'GET'},
+		// 	'create': {method:'POST'},
+		// 	'update': {method:'PUT'}
+		// })
+		// login: $resource(api_url+'login', {}, {
+		// 	'get': {method:'POST'}
+		// })
+	this.login = function(user){
+		if(!user)user = {}
+		return $http.post(api_url+"/login",user)
+	}
+})
 
-		// this.getUsers = function(){
-		// 	return $resource(api_url+'users', {}, {
-		// 		get: {method:'GET', params:{}, isArray:true}
-		// 	})
-		// }
-			// users: $resource(api_url+'users', {}, {
-			// 	get: {method:'GET', params:{}, isArray:true}
-			// }),
-			// user: $resource(api_url+'user/:username', {username:'@username'}, {
-			// 	'get': {method:'GET'},
-			// 	'create': {method:'POST'},
-			// 	'update': {method:'PUT'}
-			// })
-			// login: $resource(api_url+'login', {}, {
-			// 	'get': {method:'POST'}
-			// })
-		this.login = function(user){
-			if(!user)user = {}
-			return $http.post(api_url+"/login",user)
-		}
-	})
-})()
+module.exports = "Strawberry.api"
 },{}],8:[function(require,module,exports){
 "use strict";
  
 require("./api");
 require("./session");
 },{"./api":7,"./session":9}],9:[function(require,module,exports){
-(function(){
-	'use strict';
+angular.module('Strawberry.session',[])
 
-	angular.module('Strawberry.session',[])
+.service('Session', function($http, $q){
 
-	.service('Session', function($http, $q){
+	var sessionData = {}
 
-		var sessionData = {}
+	this.sessionID = function(sessionid){
+		if(!sessionid) return (localStorage.getItem("sessionid"))? localStorage.getItem("sessionid") : false
+		return localStorage.setItem("sessionid",sessionid)
+	}
+	this.set = function(name,value){
+		sessionData[name] = value
+	}
+	this.get = function(name){
+		if(sessionData[name])
+			return sessionData[name]
+		return false
+	}
+})
 
-		this.sessionID = function(sessionid){
-			if(!sessionid) return (localStorage.getItem("sessionid"))? localStorage.getItem("sessionid") : false
-			return localStorage.setItem("sessionid",sessionid)
-		}
-		this.set = function(name,value){
-			sessionData[name] = value
-		}
-		this.get = function(name){
-			if(sessionData[name])
-				return sessionData[name]
-			return false
-		}
-	})
-})()
+module.exports = "Strawberry.session"
 },{}],10:[function(require,module,exports){
 "use strict";
  
 require("./login");
 require("./welcome");
 },{"./login":11,"./welcome":12}],11:[function(require,module,exports){
-(function(){
-	angular.module('Strawberry.login', [
-		'ui.router',
-		'ngCookies',
-		'Strawberry.api',
-		'Strawberry.session'
-	])
+angular.module('Strawberry.login', [
+	'ui.router',
+	'ngCookies',
+	'Strawberry.api',
+	'Strawberry.session'
+])
 
-	.config(function($stateProvider, $urlRouterProvider) {
-		$stateProvider.state('login', {
-			url: "/login",
-			template: '<h1>Login!</h1>',
-			// templateUrl: 'login/index.html',
-			controller: 'loginCtrl'
-		});
-	})
+.config(function($stateProvider, $urlRouterProvider) {
+	$stateProvider.state('login', {
+		url: "/login",
+		templateUrl: 'login/index.html',
+		controller: 'loginCtrl'
+	});
+})
 
-	.controller('loginCtrl', function($scope,$routeParams,$location, $cookies, Api, Session) {
-		alert("Yo")
-		$scope.signIn = function(){
-			Api.login($scope.user).success(function(response){
-				Session.set("user",response.user)
-				Session.set("sessionid",response.sessionid)
-				$location.path('/search')
-			}).error(function(err,data){
-				alert("An error occured, please try again later")
-			})
-		}
-	})
-})()
+.controller('loginCtrl', function($scope,$location, $cookies, Api, Session) {
+	$scope.signIn = function(){
+		Api.login($scope.user).success(function(response){
+			Session.set("user",response.user)
+			Session.set("sessionid",response.sessionid)
+			$location.path('/search')
+		}).error(function(err,data){
+			alert("An error occured, please try again later")
+		})
+	}
+})
+
+module.exports = "Strawberry.login"
 },{}],12:[function(require,module,exports){
 'use strict';
 

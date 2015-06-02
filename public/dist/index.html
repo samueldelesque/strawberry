@@ -11,10 +11,6 @@
 	<link rel="stylesheet" href="css/index.css">
 </head>
 <body ng-controller="MainCtrl" class="{{controller}} {{animatingClass}}">
-	<div id="burger" ng-click="toggleMenu()">
-		<span></span><span></span><span></span>
-	</div>
-	
 	<nav>
 		<a href="#/" id="logo"><img src="img/strawberry.png" alt="Strawberry App"></a>
 		<div class="menu">
@@ -24,9 +20,13 @@
 			<a href="#/about">About</a>
 		</div>
 	</nav>
-	
+
+	<header>
+		<h1>Strawberry</h1>
+	</header>
+
 	<main>
-		<div ng-view></div>
+		<div ui-view></div>
 	</main>
 
 	<footer>Strawberry App v0.0.1</footer>

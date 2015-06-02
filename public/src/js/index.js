@@ -7,7 +7,7 @@ require("angular-cookies");
 require("./services");
 require("./views");
 
-var app = angular.module("Strawberry", [
+module.exports = angular.module("Strawberry", [
 		"ui.router",
 		// "ngCookies",
 		"Strawberry.api",
@@ -25,6 +25,7 @@ var app = angular.module("Strawberry", [
 	})
 
 	.controller("MainCtrl", function($scope,$location) {
+		// Clear temp cache
 		$scope.body = angular.element(document.body)
 		$scope.toggleMenu = function(){
 			$scope.body.toggleClass("show-nav")
@@ -55,10 +56,10 @@ var app = angular.module("Strawberry", [
 	.directive("inputfocus", function() {
 		return {
 			link: function($scope, $elm, $attrs) {
-				$elm.focus(function(){
+				$elm.on("focus",function(){
 					$scope.body.addClass("input-focus")
 				})
-				$elm.blur(function(){
+				$elm.on("blur",function(){
 					($elm.val() && $elm.parent().addClass("has-value"))
 					$scope.body.removeClass("input-focus")
 				})
@@ -74,4 +75,9 @@ var app = angular.module("Strawberry", [
 				setTimeout(function(){$rootScope.animatingClass = ""},500);
 			}
 		})
+	})
+	.run(function($rootScope, $templateCache) {
+		$rootScope.$on('$viewContentLoaded', function() {
+			$templateCache.removeAll();
+		});
 	});
