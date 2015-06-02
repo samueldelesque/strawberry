@@ -43,12 +43,15 @@ h3{
 	padding: 10px 0;
 }
 header{
-	background-color: rgba(255,255,255,.2);
+	background-color: white;
 	padding: 20px;
 	h1{
 		margin: 0;
-		color: rgba(0,0,0,.2);
+		color: $maincolor;
 		font-weight: 100;
+		a{
+			color: $maincolor;
+		}
 	}
 }
 main{
