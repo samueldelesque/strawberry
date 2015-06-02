@@ -1,0 +1,96 @@
+form,.form{
+	padding: 20px;
+	text-align: center;
+}
+input{
+	width: 100%;
+	padding: 10px;
+	outline: none;
+	border:5px solid darken($maincolor,20%);
+	border-radius:5px;
+}
+.input-box{
+	position: relative;
+	&.select{
+		&:before{
+			content: "";
+			position: absolute;
+			right: 15px;
+			top:50%;
+			margin-top:-2px;
+			height: 2px;
+			width: 10px;
+			display: block;
+			background: darken($maincolor,25%);
+			transform:rotate(-45deg);
+		}
+		&:after{
+			content: "";
+			position: absolute;
+			right: 21px;
+			top:50%;
+			margin-top:-2px;
+			height: 2px;
+			width: 10px;
+			display: block;
+			background: darken($maincolor,25%);
+			transform:rotate(45deg);
+		}
+	}
+}
+.birthdate{
+	@extend .clearfix;
+	.input-box{
+		display: inline-block;
+		float: left;
+	}
+	.day{
+		width:25%;
+	}
+	.month{
+		width:38%;
+		margin-left: 2%;
+	}
+	.year{
+		width:33%;
+		margin-left: 2%;
+	}
+}
+label{
+	font-size: 14px;
+	color: white;
+	margin: 0 5px 5px 5px;
+	display: block;
+}
+select{
+	background: white;
+	border:5px solid darken($maincolor,20%);
+	border-radius:5px;
+	outline: none;
+	padding: 0 10px;
+	font-size: 16px;
+	line-height: 1;
+	height: 44px;
+	width: 100%;
+	-webkit-appearance: none;
+}
+.ctas{
+	margin: 10px 0;
+	font-size: 22px;
+}
+button,.cta{
+	padding: 10px;
+	display: block;
+	width: 100%;
+	text-align: center;
+	padding: 10px;
+	font-size: 22px;
+	font-weight: bold;
+	outline: none;
+	box-shadow: none;
+	border:none;
+	background: darken($maincolor,20%);
+	color: white;
+	border-radius:5px;
+	transition:all .2s;
+}

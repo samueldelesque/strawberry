@@ -1,16 +1,20 @@
-'use strict';
+angular.module('Strawberry.welcome', [
+	'ui.router',
+	'ngCookies',
+	'Strawberry.api',
+	'Strawberry.session'
+])
 
-angular.module('Strawberry.welcome', ['ngRoute'])
+.config(function($stateProvider, $urlRouterProvider) {
+	$stateProvider.state('welcome', {
+		url: "/",
+		templateUrl: 'welcome/index.html',
+		controller: 'welcomeCtrl'
+	});
+})
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/', {
-	templateUrl: 'views/welcome/welcome.html',
-	controller: 'WelcomeCtrl'
-  });
-}])
+.controller('welcomeCtrl', function($scope,$location, $cookies, Api, Session) {
 
-.controller('WelcomeCtrl', ['$scope', '$routeParams', '$rootScope', function($scope,$routeParams,$rootScope) {
-	// console.log($scope.allResults);
-	// window.test = $scope.allResults
-	// $scope.userCount = $scope.allResults.length
-}]);
+})
+
+module.exports = "Strawberry.welcome"

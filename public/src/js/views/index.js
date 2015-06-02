@@ -1,4 +1,5 @@
 "use strict";
  
-require("./login");
 require("./welcome");
+require("./login");
+require("./signup");

@@ -1,0 +1,62 @@
+@import "general/normalize.scss";
+@import "general/color.scss";
+@import "general/fonts.scss";
+@import "general/grid.scss";
+@import "general/forms.scss";
+
+// Pages
+@import "pages/welcome.scss";
+@import "pages/signup.scss";
+// @import "login.less";
+
+* {
+	box-sizing: border-box;
+	max-width: 100%;
+}
+
+body{
+	background: darken($maincolor, 12%);
+	overflow: hidden;
+	transition:all .6s;
+	&.input-focus{
+		background: darken($maincolor, 18%);
+	}
+}
+a{
+	text-decoration: none;
+	color: white;
+}
+h1{
+	font-weight: 100;
+	margin: 0;
+	font-size: 26px;
+	padding: 10px 0;
+}
+h2{
+	font-weight: 100;
+	font-size: 22px;
+	padding: 10px 0;
+}
+h3{
+	font-weight: 100;
+	font-size: 16px;
+	padding: 10px 0;
+}
+header{
+	background-color: rgba(255,255,255,.2);
+	padding: 20px;
+	h1{
+		margin: 0;
+		color: rgba(0,0,0,.2);
+		font-weight: 100;
+	}
+}
+main{
+	padding: 20px;
+	transition:all .2s;
+}
+footer{
+	text-align: center;
+	color:rgba(255,255,255,.4);
+	font-size: 11px;
+}

@@ -1,0 +1,27 @@
+$max-width: 640px;
+
+.clearfix {
+	&:before,
+	&:after {
+		content: " "; // 1
+		display: table; // 2
+	}
+	&:after {
+		clear: both;
+	}
+}
+
+.row{
+	margin:20px 0;
+	text-align: left;
+	&:first-child{
+		border-top:none;
+	}
+	@media screen and (max-width: $max-width){
+		margin: 15px 0;
+	}
+}
+.container{
+	margin: 0 auto;
+	max-width: $max-width;
+}

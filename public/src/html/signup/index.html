@@ -1,52 +1,69 @@
-<div id="signup" class="questionaire">
+<div id="signup" class="form">
+	<div class="agegate" ng-show="agegate">
+		<h2>You must be 18+ to join!</h2>
+		<div class="ctas">
+			<a href="#/" class="cta">Back home</a>
+		</div>
+	</div>
 	<div class="row">
-		<div class="prefix">My name is</div>
 		<div class="input-box" ng-class="{'has-value': user.fullname}">
-			<input type="text" ng-model="user.fullname" placeholder="John Doe" inputfocus>
+			<input type="text" ng-model="user.fullname" placeholder="Full Name" inputfocus>
 		</div>
 	</div>
 
 	<div class="row">
-		<div class="prefix">Username</div>
-		<div class="input-box" ng-class="{'has-value': user.username}">
-			<input type="text" ng-model="user.username" placeholder="john_doe_1986" inputfocus>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="prefix">I am/we are</div>
-		<div class="input-box">
-			<select ng-model="user.gender" inputfocus>
-				<option>a girl</option>
-				<option>a guy</option>
-				<option>a couple</option>
-				<option>a group of friends</option>
-				<option>other</option>
+		<label for="user-gender">Gender</label>
+		<div class="input-box select">
+			<select ng-model="user.gender" id="user-gender" inputfocus>
+				<option value="female">Female</option>
+				<option value="male">Male</option>
+				<option value="couple">Couple</option>
+				<option value="other">Other</option>
 			</select>
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="prefix">Looking for</div>
-		<div class="input-box">
-			<select ng-model="user.lookingForGender" inputfocus>
-				<option>any</option>
-				<option>a girl</option>
-				<option>a guy</option>
-				<option>a couple</option>
-				<option>a group of friends</option>
+	<!-- <div class="row">
+		<label for="user-looking-for">Looking for:</label>
+		<div class="input-box select">
+			<select ng-model="user.lookingForGender" id="user-looking-for" inputfocus>
+				<option value="all">All</option>
+				<option value="female">Girls</option>
+				<option value="male">Guys</option>
+				<option value="couple">Couples</option>
 			</select>
 		</div>
-	</div>
+	</div> -->
 
 	<div class="row">
-		<div class="prefix">My phone #</div>
-		<div class="input-box">
-			<input type="telephone" ng-model="user.phone" placeholder="347-123-4567" inputfocus>
+		<label for="user-birthday">Birthday</label>
+		<div class="birthdate">
+			<!-- <input birthdatedropdown type="text" id="user-birthday" ng-model="user.birthday"> -->
+			<div class="input-box day select">
+				<select name="birthdate.day" ng-model="birthdate.day" placeholder="Day" ng-options="day for day in days" ng-change="setBirthday()"></select>
+			</div>
+			<div class="input-box month select">
+				<select name="birthdate.month" ng-model="birthdate.month" placeholder="Month" ng-options="month.value as month.name for month in months" ng-change="setBirthday()"></select>
+			</div>
+			<div class="input-box year select">
+				<select name="birthdate.year" ng-model="birthdate.year" placeholder="Year" ng-options="year for year in years" ng-change="setBirthday()"></select>
+			</div>
 		</div>
 	</div>
 
 	<div class="row">
-		<button type="submit" class="cta submit" ng-click="validateUser()">Let me in</button>
+		<div class="input-box">
+			<input type="email" ng-model="user.email" placeholder="Email" inputfocus>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="input-box">
+			<input type="telephone" ng-model="user.phone" placeholder="Phone" inputfocus>
+		</div>
+	</div>
+
+	<div class="row">
+		<button type="submit" class="cta submit" ng-click="signUp()">Create account</button>
 	</div>
 </div>

@@ -1,21 +1,25 @@
 "use strict";
 
-require('angular');
+require("angular");
 require("angular-ui-router");
 require("angular-cookies");
 
 require("./services");
 require("./views");
+require("./models");
+require("./directives");
 
 module.exports = angular.module("Strawberry", [
 		"ui.router",
 		// "ngCookies",
 		"Strawberry.api",
 		"Strawberry.session",
+		"Strawberry.birthdate",
+		"Strawberry.user",
 		// "Strawberry.results",
 		// "Strawberry.search",
-		// "Strawberry.signup",
-		// "Strawberry.welcome",
+		"Strawberry.signup",
+		"Strawberry.welcome",
 		"Strawberry.login"
 		// "ui.bootstrap",
 	])
@@ -77,7 +81,7 @@ module.exports = angular.module("Strawberry", [
 		})
 	})
 	.run(function($rootScope, $templateCache) {
-		$rootScope.$on('$viewContentLoaded', function() {
+		$rootScope.$on("$viewContentLoaded", function() {
 			$templateCache.removeAll();
 		});
 	});

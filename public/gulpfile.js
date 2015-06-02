@@ -9,23 +9,26 @@ var buffer = require("vinyl-buffer");
 var gutil = require("gulp-util");
 var sourcemaps = require("gulp-sourcemaps");
 var assign = require("lodash.assign");
-var less = require('gulp-less');
+// var less = require('gulp-less');
+var sass = require('gulp-sass');
+var autoprefixer = require('gulp-autoprefixer');
 var cssmin = require('gulp-cssmin');
 
-// add custom browserify options here
 var customOpts = {
   entries: ["./src/js/index.js"],
   debug: true
 };
 var opts = assign({}, watchify.args, customOpts);
-var b = watchify(browserify(opts)); 
+var b = watchify(browserify(opts));
 
-gulp.task("less",function(){
-	return gulp.src('./src/less/index.less')
-		.pipe(sourcemaps.init({loadMaps: true}))
-		.pipe(less())
-		.pipe(cssmin())
-		.pipe(gulp.dest('./dist/css'))
+gulp.task('sass', function () {
+	return gulp.src('./src/sass/index.scss')
+		// .pipe(sourcemaps.init({loadMaps: true}))
+		.pipe(sass({errLogToConsole:true}).on('error', sass.logError))
+		.pipe(autoprefixer())
+		// .pipe(cssmin())
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest('./dist/css/'));
 });
 gulp.task("html",function(){
 	return gulp.src('./src/html/**/*.html')
@@ -44,21 +47,22 @@ b.on("update", bundle);
 b.on("log", gutil.log);
 
 function bundle() {
-  return b.bundle()
-	.on("error", gutil.log.bind(gutil, "Browserify Error"))
-	.pipe(source("app.js"))
-	.pipe(buffer())
-	// .pipe(uglify())
-	.pipe(sourcemaps.init({loadMaps: true}))
-	.pipe(sourcemaps.write("./"))
-	.pipe(gulp.dest("./dist/js"));
+	return b.bundle()
+		.on("error", gutil.log.bind(gutil, "Browserify Error"))
+		.pipe(source("app.js"))
+		.pipe(buffer())
+		// .pipe(uglify())
+		.pipe(sourcemaps.init({loadMaps: true}))
+		.pipe(sourcemaps.write("./"))
+		.pipe(gulp.dest("./dist/js"));
 }
 
 gulp.task("watch", function() {
 	gulp.watch("./src/html/**/*.html", ["html"])
-	gulp.watch("./src/less/**/*.less", ["less"])
+	// gulp.watch("./src/less/**/*.less", ["less"])
+	gulp.watch("./src/sass/**/*.scss", ["sass"])
 	gulp.watch("./src/fonts/**/*", ["fonts"])
 	gulp.watch("./src/img/**/*", ["img"])
 });
 
-gulp.task("default",["html","less","fonts","img","watch","js"])
+gulp.task("default",["html","sass","fonts","img","watch","js"])

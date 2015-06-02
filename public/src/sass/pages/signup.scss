@@ -1,0 +1,18 @@
+#signup{
+	position: relative;
+	.agegate{
+		position:absolute;
+		z-index: 9;
+		opacity: .95;
+		top:0;
+		left:0;
+		right: 0;
+		bottom: 0;
+		background: darken($maincolor,10%);
+		text-align: center;
+		padding: 80px 20px;
+		h2{
+			color: white;
+		}
+	}
+}
