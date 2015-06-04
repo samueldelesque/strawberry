@@ -12,13 +12,12 @@ require("./directives");
 
 module.exports = angular.module("Strawberry", [
 		"ui.router",
-		// "ngCookies",
+		"ngCookies",
 		"Strawberry.api",
 		"Strawberry.session",
-		"Strawberry.birthdate",
 		"Strawberry.user",
 		// "Strawberry.results",
-		// "Strawberry.search",
+		"Strawberry.search",
 		"Strawberry.signup",
 		"Strawberry.welcome",
 		"Strawberry.login"
@@ -29,33 +28,16 @@ module.exports = angular.module("Strawberry", [
 		$urlRouterProvider.otherwise("/");
 	})
 
-	.controller("MainCtrl", function($scope,$location) {
-		// Clear temp cache
-		$scope.body = angular.element(document.body)
-		$scope.toggleMenu = function(){
-			$scope.body.toggleClass("show-nav")
+	.controller("MainCtrl", function($scope,$location,Session) {
+		if(Session.get("user") != null){
+			$location.path('/search')
 		}
+		$scope.body = angular.element(document.body)
+		$scope.env = window.Settings.env||"prod"
 	})
 	.filter("percentage", function ($filter) {
 		return function (input, decimals) {
-		return $filter("number")(input * 100, decimals) + "%";
-		};
-	})
-	.directive("typewriter", function() {
-		$.typer.options = {
-			highlightSpeed    : 20,
-			typeSpeed         : 200,
-			clearDelay        : 1000,
-			typeDelay         : 200,
-			clearOnHighlight  : true,
-			typerDataAttr     : "data-typer-targets",
-			typerInterval     : 2000
-		}
-		return {
-			link: function(scope, elm, attrs) {
-				setTimeout(function(){elm.typer()},500)
-			},
-			template: "Anything"
+			return $filter("number")(input * 100, decimals) + "%";
 		}
 	})
 	.directive("inputfocus", function() {
@@ -86,200 +68,23 @@ module.exports = angular.module("Strawberry", [
 			$templateCache.removeAll();
 		});
 	});
-},{"./directives":3,"./models":4,"./services":13,"./views":15,"angular":10,"angular-cookies":7,"angular-ui-router":8}],2:[function(require,module,exports){
-angular.module("Strawberry.birthdate",[])
-.factory('dateUtil', function (){
-	var that = this,
-		dayRange = [1, 31],
-		// months = [
-		// 	'January',
-		// 	'February',
-		// 	'March',
-		// 	'April',
-		// 	'May',
-		// 	'June',
-		// 	'July',
-		// 	'August',
-		// 	'September',
-		// 	'October',
-		// 	'November',
-		// 	'December'
-		// ],
-		months = [
-			'Jan',
-			'Feb',
-			'Mar',
-			'Apr',
-			'May',
-			'Jun',
-			'Jul',
-			'Aug',
-			'Sep',
-			'Oct',
-			'Nov',
-			'Dec'
-		]
-
-	function changeDate (date) {
-		if(date.day > 28) {
-			date.day--;
-			return date;
-		} else if (date.month > 11) {
-			date.day = 31;
-			date.month--;
-			return date;
-		}
-	};
-
-	return {
-		checkDate: function (date) {
-			var d;
-			if (!date.day || !date.month || !date.year) return false;
-
-			d = new Date(Date.UTC(date.year, date.month, date.day));
-
-			if (d && (d.getMonth() === date.month && d.getDate() === Number(date.day))) {
-				return d;
-			}
-
-			return this.checkDate(changeDate(date));
-		},
-		days: (function () {
-			var days = [];
-			while (dayRange[0] <= dayRange[1]) {
-				days.push(dayRange[0]++);
-			}
-			return days;
-		}()),
-		months: (function () {
-			var lst = [],
-					mLen = months.length;
-
-			while (mLen--) {
-				lst.push({
-					value: mLen,
-					name: months[mLen]
-				});
-			}
-			return lst;
-		}())
-	};
-})
-.directive('birthdatedropdown', function (dateUtil) {
-	return {
-		restrict: 'A',
-		replace: true,
-		require: 'ngModel',
-		scope: {
-			model: '=ngModel'
-		},
-		controller: function ($scope, dateUtil) {
-			$scope.days = dateUtil.days;
-			$scope.months = dateUtil.months;
-
-			$scope.dateFields = {};
-
-			$scope.$watch('model', function (newDate) {
-				$scope.dateFields.day = new Date(newDate).getUTCDate();
-				$scope.dateFields.month = new Date(newDate).getUTCMonth();
-				$scope.dateFields.year = new Date(newDate).getUTCFullYear();
-			});
-
-			$scope.checkDate = function () {
-				var date = dateUtil.checkDate($scope.dateFields);
-				if (date) {
-					$scope.dateFields = date;
-				}
-			};
-		},
-		template:
-		'<div class="form-inline">' +
-		'  <div class="input-box day select">' +
-		'    <select name="dateFields.day" data-ng-model="dateFields.day" placeholder="Day" class="form-control" ng-options="day for day in days" ng-change="checkDate()" ng-disabled="disableFields"></select>' +
-		'  </div>' +
-		'  <div class="input-box month select">' +
-		'    <select name="dateFields.month" data-ng-model="dateFields.month" placeholder="Month" class="form-control" ng-options="month.value as month.name for month in months" value="{{ dateField.month }}" ng-change="checkDate()" ng-disabled="disableFields"></select>' +
-		'  </div>' +
-		'  <div class="input-box year select">' +
-		'    <select ng-show="!yearText" name="dateFields.year" data-ng-model="dateFields.year" placeholder="Year" class="form-control" ng-options="year for year in years" ng-change="checkDate()" ng-disabled="disableFields"></select>' +
-		'    <input ng-show="yearText" type="text" name="dateFields.year" data-ng-model="dateFields.year" placeholder="Year" class="form-control" ng-disabled="disableFields">' +
-		'  </div>' +
-		'</div>',
-		link: function (scope, element, attrs, ctrl) {
-			var currentYear = parseInt(attrs.startingYear, 10) || new Date().getFullYear(),
-				numYears = parseInt(attrs.numYears,10) || 100,
-				oldestYear = currentYear - numYears,
-				overridable = [
-					'dayDivClass',
-					'dayClass',
-					'monthDivClass',
-					'monthClass',
-					'yearDivClass',
-					'yearClass'
-				],
-				required;
-
-			scope.years = [];
-			scope.yearText = attrs.yearText ? true : false;
-
-			if (attrs.ngDisabled) {
-				scope.$parent.$watch(attrs.ngDisabled, function (newVal) {
-					scope.disableFields = newVal;
-				});
-			}
-
-			if (attrs.required) {
-				required = attrs.required.split(' ');
-
-				ctrl.$parsers.push(function (value) {
-					angular.forEach(required, function (elem) {
-						if (!angular.isNumber(elem)) {
-							ctrl.$setValidity('required', false);
-						}
-					});
-					ctrl.$setValidity('required', true);
-				});
-			}
-
-			for (var i = currentYear; i >= oldestYear; i--) {
-				scope.years.push(i);
-			}
-
-			(function () {
-				var oLen = overridable.length,
-						oCurrent,
-						childEle;
-				while (oLen--) {
-					oCurrent = overridable[oLen];
-					childEle = element[0].children[Math.floor(oLen / 2)];
-
-					if (oLen % 2 && oLen != 2) {
-						childEle = childEle.children[0];
-					}
-
-					if (attrs[oCurrent]) {
-						angular.element(childEle).attr('class', attrs[oCurrent]);
-					}
-				}
-			}());
-		}
-	};
-});
+},{"./directives":2,"./models":3,"./services":12,"./views":14,"angular":9,"angular-cookies":6,"angular-ui-router":7}],2:[function(require,module,exports){
+"use strict";
+ 
+// require("./birthdate");
+// require("./typewrite");
 },{}],3:[function(require,module,exports){
 "use strict";
  
-require("./birthdate");
-},{"./birthdate":2}],4:[function(require,module,exports){
-"use strict";
- 
 require("./user");
-},{"./user":5}],5:[function(require,module,exports){
+},{"./user":4}],4:[function(require,module,exports){
 var validator = require("validator");
 
 angular.module("Strawberry.user",[])
 
 .service("User", function(){
 	this.validate = function(name, value){
+		if(!value){return false}
 		switch(name){
 			case "fullname":
 				if(!validator.isLength(value,3,100)) return false
@@ -294,7 +99,8 @@ angular.module("Strawberry.user",[])
 				if(value.length <= 5) return false
 			break
 			case "birthdate":
-				if(this.getAge(new Date(value)) < 18) return false
+				var date = new Date(value)
+				if(this.getAge(date) < 18) return false
 			break
 			case "phone":
 				if(value.match(/^[2-9]\d{2}[\- ]?\d{3}[\- ]?\d{4}$/i) == null) return false
@@ -307,12 +113,31 @@ angular.module("Strawberry.user",[])
 		}
 		return true
 	}
+	this.validateData = function(data){
+		var errors = []
+		if(!this.validate("fullname",data.fullname))errors.push("fullname")
+		if(!this.validate("gender",data.gender))errors.push("gender")
+		if(!this.validate("email",data.email))errors.push("email")
+		if(!this.validate("birthdate",data.birthdate))errors.push("birthdate")
+		if(!this.validate("phone",data.phone))errors.push("phone")
+		return errors
+	}
 	this.set = function(name,value){
 		if(this.validate(name,value)){
 			this[name] = value
 			return true
 		}
 		return false
+	}
+	this.get = function(){
+		return {
+			fullname: this.fullname,
+			gender: this.gender,
+			email: this.email,
+			password: this.password,
+			birthdate: this.birthdate.getUTCFullYear()+"-"+this.birthdate.getUTCMonth()+"-"+this.birthdate.getUTCDate(),
+			phone: this.phone
+		}
 	}
 	this.getAge = function(birthDate){
 		if(!birthDate)birthDate = this.birthdate
@@ -326,7 +151,7 @@ angular.module("Strawberry.user",[])
 })
 
 module.exports = "Strawberry.user"
-},{"validator":11}],6:[function(require,module,exports){
+},{"validator":10}],5:[function(require,module,exports){
 /**
  * @license AngularJS v1.4.0
  * (c) 2010-2015 Google, Inc. http://angularjs.org
@@ -648,11 +473,11 @@ angular.module('ngCookies').provider('$$cookieWriter', function $$CookieWriterPr
 
 })(window, window.angular);
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 require('./angular-cookies');
 module.exports = 'ngCookies';
 
-},{"./angular-cookies":6}],8:[function(require,module,exports){
+},{"./angular-cookies":5}],7:[function(require,module,exports){
 /**
  * State-based routing for AngularJS
  * @version v0.2.15
@@ -5023,7 +4848,7 @@ angular.module('ui.router.state')
   .filter('isState', $IsStateFilter)
   .filter('includedByState', $IncludedByStateFilter);
 })(window, window.angular);
-},{}],9:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 /**
  * @license AngularJS v1.4.0
  * (c) 2010-2015 Google, Inc. http://angularjs.org
@@ -33157,11 +32982,11 @@ var minlengthDirective = function() {
 })(window, document);
 
 !window.angular.$$csp() && window.angular.element(document).find('head').prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":9}],11:[function(require,module,exports){
+},{"./angular":8}],10:[function(require,module,exports){
 /*!
  * Copyright (c) 2015 Chris O'Hara <cohara87@gmail.com>
  *
@@ -33899,69 +33724,87 @@ module.exports = angular;
 
 });
 
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 angular.module('Strawberry.api',[])
 
 .service('Api', function($http, $q){
-	var api_url = "http://localhost:3041"
+	if(!window.Settings||!window.Settings.apiUrl){
+		console.error("No API settings provided!");
+		return;
+	}
+	var apiUrl = window.Settings.apiUrl;
 
-	// this.getUsers = function(){
-	// 	return $resource(api_url+'users', {}, {
-	// 		get: {method:'GET', params:{}, isArray:true}
-	// 	})
-	// }
-		// users: $resource(api_url+'users', {}, {
-		// 	get: {method:'GET', params:{}, isArray:true}
-		// }),
-		// user: $resource(api_url+'user/:username', {username:'@username'}, {
-		// 	'get': {method:'GET'},
-		// 	'create': {method:'POST'},
-		// 	'update': {method:'PUT'}
-		// })
-		// login: $resource(api_url+'login', {}, {
-		// 	'get': {method:'POST'}
-		// })
 	this.login = function(user){
 		if(!user)user = {}
-		return $http.post(api_url+"/login",user)
+		return $http.post(apiUrl+"login",user)
+	}
+	this.signup = function(user){
+		if(!user)user = {}
+		return $http.post(apiUrl+"user",user)
+	}
+	this.update = function(user){
+		if(!user)user = {}
+		return $http.put(apiUrl+"user",user)
 	}
 })
 
 module.exports = "Strawberry.api"
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
  
 require("./api");
 require("./session");
-},{"./api":12,"./session":14}],14:[function(require,module,exports){
-angular.module('Strawberry.session',[])
+},{"./api":11,"./session":13}],13:[function(require,module,exports){
+angular.module('Strawberry.session',[
+	"Strawberry.user"
+])
 
-.service('Session', function($http, $q){
-
-	var sessionData = {}
-
-	this.sessionID = function(sessionid){
-		if(!sessionid) return (localStorage.getItem("sessionid"))? localStorage.getItem("sessionid") : false
-		return localStorage.setItem("sessionid",sessionid)
-	}
+.service('Session', function($http, $q, User){
+	var Session = this;
 	this.set = function(name,value){
-		sessionData[name] = value
+		localStorage.setItem(name,value)
 	}
 	this.get = function(name){
-		if(sessionData[name])
-			return sessionData[name]
-		return false
+		return localStorage.getItem(name)
+	}
+	this.user = function(user){
+		if(!user){
+			// Get user
+			var user = Session.get("user");
+			if(user != null){
+				return angular.fromJson(user)
+			}
+			return false
+		}
+		else{
+			// Set user
+			Session.set("user",angular.toJson(user));
+			return user
+		}
+	}
+	this.sessionid = function(sessionid){
+		if(!sessionid){
+			// Get Sessionid
+			var sessionid = Session.get("sessionid");
+			return sessionid||false
+		}
+		else{
+			// Set Sessionid
+			Session.set("sessionid",sessionid)
+			return sessionid
+		}
 	}
 })
 
 module.exports = "Strawberry.session"
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
  
 require("./welcome");
 require("./login");
 require("./signup");
-},{"./login":16,"./signup":17,"./welcome":18}],16:[function(require,module,exports){
+require("./search");
+},{"./login":15,"./search":16,"./signup":17,"./welcome":18}],15:[function(require,module,exports){
 angular.module('Strawberry.login', [
 	'ui.router',
 	'ngCookies',
@@ -33978,10 +33821,13 @@ angular.module('Strawberry.login', [
 })
 
 .controller('loginCtrl', function($scope,$location, $cookies, Api, Session) {
+	if(Session.user() != null){
+		$location.path('/search')
+	}
 	$scope.signIn = function(){
 		Api.login($scope.user).success(function(response){
-			Session.set("user",response.user)
-			Session.set("sessionid",response.sessionid)
+			Session.user(response.user)
+			Session.sessionid(response.sessionid)
 			$location.path('/search')
 		}).error(function(err,data){
 			alert("An error occured, please try again later")
@@ -33990,14 +33836,38 @@ angular.module('Strawberry.login', [
 })
 
 module.exports = "Strawberry.login"
+},{}],16:[function(require,module,exports){
+angular.module("Strawberry.search", [
+	"ui.router",
+	"Strawberry.api",
+	"Strawberry.session"
+])
+
+.config(function($stateProvider, $urlRouterProvider) {
+	$stateProvider.state("search", {
+		url: "/search",
+		templateUrl: "search/index.html",
+		controller: "searchCtrl"
+	});
+})
+
+.controller("searchCtrl", function($scope, Api, Session) {
+	if(Session.user() == null){
+		$location.path("/")
+	}
+	$scope.user = Session.user()
+	$scope.search = function(){
+		alert("Sorry not available yet!")
+	}
+})
+
+module.exports = "Strawberry.search"
 },{}],17:[function(require,module,exports){
 angular.module("Strawberry.signup", [
 	"ui.router",
-	"ngCookies",
 	"Strawberry.api",
 	"Strawberry.session",
-	"Strawberry.user",
-	"Strawberry.birthdate"
+	"Strawberry.user"
 ])
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -34008,14 +33878,21 @@ angular.module("Strawberry.signup", [
 	});
 })
 
-.controller("signupCtrl", function($scope,$location, $cookies, Api, Session, User) {
+.controller("signupCtrl", function($scope,$location, Api, Session, User) {
+	if(Session.user() != null){
+		$location.path('/search')
+	}
 	$scope.user = User;
 
-	var now = new Date()
-	var y = now.getFullYear();
-	$scope.user.set("gender","female")
+	var now = new Date(),
+		y = now.getFullYear(),
+		m = now.getMonth(),
+		d = now.getDate()
+
+	$scope.user.gender = "female"
 	$scope.user.birthdate = new Date()
-	$scope.birthdate = {day:1,month:1,year:y}
+
+	$scope.birthdate = {day:d,month:m,year:y}
 	$scope.days = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
 	$scope.years = []
 	for(year=y;year>y-100;year--)$scope.years.push(year)
@@ -34035,7 +33912,7 @@ angular.module("Strawberry.signup", [
 	]
 
 	$scope.setBirthday = function(){
-		$scope.user.birthdate = new Date($scope.birthdate.year+"-"+$scope.birthdate.month+"-"+$scope.birthdate.day)
+		$scope.user.birthdate = new Date($scope.birthdate.year,$scope.birthdate.month,$scope.birthdate.day)
 	}
 
 	$scope.signUp = function(){
@@ -34043,14 +33920,27 @@ angular.module("Strawberry.signup", [
 			$scope.agegate = true
 			return
 		}
-		console.log($scope.user.birthday,$scope.user.getAge())
-		// Api.signup($scope.user).success(function(response){
-		// 	Session.set("user",response.user)
-		// 	Session.set("sessionid",response.sessionid)
-		// 	$location.path("/search")
-		// }).error(function(err,data){
-		// 	alert("An error occured, please try again later")
-		// })
+		var data = $scope.user.get(),
+			errors = $scope.user.validateData(data)
+
+		if(errors.length > 0){
+			angular.forEach(errors,function(e){
+				var el = angular.element(document.getElementById("user-"+e))
+				el.addClass("error")
+				el.bind("focus",function(){
+					el.removeClass("error")
+				})
+			})
+		}
+		else{
+			Api.signup(data).success(function(response){
+				Session.user(response.user)
+				Session.sessionid(response.sessionid)
+				// $location.path("/search")
+			}).error(function(err,data){
+				alert("An error occured, please try again later")
+			})
+		}
 	}
 })
 

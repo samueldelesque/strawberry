@@ -5,6 +5,7 @@ var uglify = require("gulp-uglify");
 var browserify = require("browserify");
 var gulp = require("gulp");
 var source = require("vinyl-source-stream");
+var rename = require("gulp-rename");
 var buffer = require("vinyl-buffer");
 var gutil = require("gulp-util");
 var sourcemaps = require("gulp-sourcemaps");
@@ -14,12 +15,18 @@ var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var cssmin = require('gulp-cssmin');
 
+var env = gutil.env && gutil.env.env?gutil.env.env:"dev";
+
 var customOpts = {
   entries: ["./src/js/index.js"],
   debug: true
 };
 var opts = assign({}, watchify.args, customOpts);
 var b = watchify(browserify(opts));
+
+console.log("");
+console.log("For prod, add `gulp --env=prod`. Current env: ",env)
+console.log("");
 
 gulp.task('sass', function () {
 	return gulp.src('./src/sass/index.scss')
@@ -33,6 +40,11 @@ gulp.task('sass', function () {
 gulp.task("html",function(){
 	return gulp.src('./src/html/**/*.html')
 		.pipe(gulp.dest('./dist/'))
+});
+gulp.task("settings",function(){
+	return gulp.src('./src/js/settings.'+env+'.js')
+		.pipe(rename("js/settings.js"))
+		.pipe(gulp.dest('./dist'))
 });
 gulp.task("fonts",function(){
 	return gulp.src('./src/fonts/**/*')
@@ -65,4 +77,4 @@ gulp.task("watch", function() {
 	gulp.watch("./src/img/**/*", ["img"])
 });
 
-gulp.task("default",["html","sass","fonts","img","watch","js"])
+gulp.task("default",["html","sass","fonts","img","watch","js","settings"])

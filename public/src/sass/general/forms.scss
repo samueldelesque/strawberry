@@ -2,12 +2,19 @@ form,.form{
 	padding: 20px;
 	text-align: center;
 }
-input{
+input,textarea{
 	width: 100%;
 	padding: 10px;
 	outline: none;
 	border:5px solid darken($maincolor,20%);
 	border-radius:5px;
+	&.error{
+		background: #fbb;
+		color: white;
+		&::input-placeholder{
+			color: white;
+		}
+	}
 }
 .input-box{
 	position: relative;

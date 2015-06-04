@@ -11,13 +11,12 @@ require("./directives");
 
 module.exports = angular.module("Strawberry", [
 		"ui.router",
-		// "ngCookies",
+		"ngCookies",
 		"Strawberry.api",
 		"Strawberry.session",
-		"Strawberry.birthdate",
 		"Strawberry.user",
 		// "Strawberry.results",
-		// "Strawberry.search",
+		"Strawberry.search",
 		"Strawberry.signup",
 		"Strawberry.welcome",
 		"Strawberry.login"
@@ -28,33 +27,16 @@ module.exports = angular.module("Strawberry", [
 		$urlRouterProvider.otherwise("/");
 	})
 
-	.controller("MainCtrl", function($scope,$location) {
-		// Clear temp cache
-		$scope.body = angular.element(document.body)
-		$scope.toggleMenu = function(){
-			$scope.body.toggleClass("show-nav")
+	.controller("MainCtrl", function($scope,$location,Session) {
+		if(Session.get("user") != null){
+			$location.path('/search')
 		}
+		$scope.body = angular.element(document.body)
+		$scope.env = window.Settings.env||"prod"
 	})
 	.filter("percentage", function ($filter) {
 		return function (input, decimals) {
-		return $filter("number")(input * 100, decimals) + "%";
-		};
-	})
-	.directive("typewriter", function() {
-		$.typer.options = {
-			highlightSpeed    : 20,
-			typeSpeed         : 200,
-			clearDelay        : 1000,
-			typeDelay         : 200,
-			clearOnHighlight  : true,
-			typerDataAttr     : "data-typer-targets",
-			typerInterval     : 2000
-		}
-		return {
-			link: function(scope, elm, attrs) {
-				setTimeout(function(){elm.typer()},500)
-			},
-			template: "Anything"
+			return $filter("number")(input * 100, decimals) + "%";
 		}
 	})
 	.directive("inputfocus", function() {

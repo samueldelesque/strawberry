@@ -1,27 +1,41 @@
 var Restify = require('restify'),
 	// Sessions = require("sessions"),
 	Redis = require('redis'),
-	Mongolian = require('mongolian'),
-	ObjectId = require('mongolian').ObjectId,
+	// Mongolian = require('mongolian'),
+	Mongoose = require('mongoose'),
+	ObjectId = Mongoose.Schema.ObjectId,
+	// ObjectId = require('mongolian').ObjectId,
 	validator = require('validator'),
+	Extend = require('extend'),
 	forEach = require("for-each"),
 	Crypto = require('crypto'),
 
 	// sessionHandler = new Sessions(),
-	userModel = require("./models/user"),
+	User = require("./models/user"),
 	server = Restify.createServer({
 		name: "Strawberry Api"
 	}),
-	dbserver = new Mongolian,
+	// dbserver = new Mongolian,
 	sessionStore = Redis.createClient(6379,"127.0.0.1"),
-	db = dbserver.db("strawberry"),
-	users = db.collection("users"),
+	// db = dbserver.db("strawberry"),
+	// users = db.collection("users"),
 	port = 3041
 
-// console.log(new ObjectId())
-
+/*
+	Redis Session server
+*/
 sessionStore.on('connect', function(err) {
-    console.log('Session server connected');
+    console.log('Session server connected!');
+})
+
+/*
+	Connect Mongoose to MongoDB
+*/
+Mongoose.connect('mongodb://127.0.0.1/strawberry')
+var db = Mongoose.connection;
+db.on('error', console.error.bind(console, 'DB connection error:'));
+db.once('open', function () {
+	console.log("Database server connected!")
 })
 
 server.use(Restify.queryParser())
@@ -51,47 +65,66 @@ var required = function(fields,req,res,next){
 }
 
 server.get('/users', function(req, res, next) {
-	users.find({},{_id:false,username:true,fullname:true,gender:true,age:true}).limit(120).sort({ created: 1 }).toArray(function (err, array) {
+	User.find({}, function (err, users) {
 		if(err){
 			res.statusCode = 403
+			res.send({error:err})
 			console.log("Failed to fetch users",err)
 			return next()
 		}
 		else{
-			res.send(array)
+			res.send(users)
 			return next()
 		}
 	})
 })
 
 server.post('/login',function(req, res, next){
-	required({password:"string",email:"string"},req,res,next)
+	var missing = required({password:"string"},req,res,next)
+	if(!req.params.password || !req.params.identifier){
+		res.statusCode = 403
+		res.send({msg:"Missing arguments",error:{name:"missing"}})
+		return next()
+	}
 
-	users.findOne({email:req.params.email},{_id:true,email:true,fullname:true,gender:true,birthdate:true,password:true},function(err,data){
-		if(err || !data){
+	// You can pass either a MongoID or phone or Email
+	if(Mongoose.Types.ObjectId.isValid(req.params.identifier)){
+		var query = {_id:Mongoose.Types.ObjectId(req.params.identifier)}
+	}
+	else{
+		var query = {
+			$or:[
+				{email:req.params.identifier},
+				{phone:req.params.identifier}
+			]
+		}
+	}
+
+	// Find user
+	User.findOne(query,function(err,user){
+		if(err){
 			res.statusCode = 404
 			res.send({msg:"Could not find user",error:err})
 			return next()
 		}
-		console.log("Attempting user login",req.email,req.password,data.password)
-		var user = new userModel(data)
-		if(req.params.password == user.get("password")){
-			var userData = user.get()
-			delete userData.password
+		if(req.params.password == user.password){
+			// Hide Password from API
+			user.password = ""
+
+			// Build a session id
 			var now = new Date(),
 				tmp = now.getTime() + Math.floor(Math.random()*1000) + 1,
 				sessionid = Crypto.createHash('md5').update(tmp.toString()).digest('hex')
 
-			sessionStore.set(sessionid,data._id,function(err,data){
+			// Set Session and return user and sessionid
+			sessionStore.set(sessionid,user._id,function(err,data){
 				if(err){
-					console.error("Failed to set session")
 					res.statusCode = 403
-					res.send({message:"An error occured"})
+					res.send({message:"An error occured",error:err})
 					return next()
 				}
 				else{
-					console.log("Session",sessionid,data._id)
-					res.send({user:userData,sessionid:sessionid})
+					res.send({user:user,sessionid:sessionid})
 					return next()
 				}
 			})
@@ -105,171 +138,131 @@ server.post('/login',function(req, res, next){
 	})
 })
 
-server.get('/me',function(req, res, next){
-	console.log(req.query())
-	console.log(req.query)
-	var errors = required({sessionid:"string"},req,res,next)
-	if(errors.length > 0){
-		res.statusCode = 401
-		console.log("Missing fields",errors,req.params)
-		res.send({msg:"Missing fields",errors:errors})
-		return next()
-	}
-	else{
-		console.log(req.sessionid)
-		
-		sessionStore.get(req.sessionid,function(err,data){
-			if(err){
-				res.statusCode = 401
-				res.send({message:"Session not found"})
-				return next()
-			}
-			else{
-				console.log("Session",sessionid,data)
-				res.send({user:{}})
-				return next()
-				// users.findOne({email:req.params.email},{_id:true,email:true,fullname:true,gender:true,birthdate:true,password:true},function(err,data){
-				// 	if(err){
-				// 		res.statusCode = 404
-				// 		res.send({msg:"Could not find user",error:err})
-				// 		return next()
-				// 	}
-				// 	else{
-				// 		var userData = user.get()
-				// 		delete userData.password
-				// 		var now = new Date(),
-				// 			tmp = now.getTime() + Math.floor(Math.random()*1000) + 1,
-				// 			sessionid = Crypto.createHash('md5').update(tmp.toString()).digest('hex')
-				// 	}
-				// })
-			}
-		})
-	}
-})
-
-server.put('/user', function(req, res, next) {
-	console.log("Api::insert user")
-
-	if(!req.params.sessionid){
-		console.log("No SessionId passed for update")
-		res.send({status:401,msg:"You must pass a sessionid to update user!"})
-		return next()
-		return
-	}
-
-	sessionStore.get(req.params.sessionid,function(err,uid){
-		var user = new userModel(),
-			allowed = user.allowedFields()
-		forEach(req.params,function(value,name){
-			if(allowed.indexOf(name) > -1)
-				user.set(name,value)
-		})
-		// console.log("Update ",uid,ObjectId)
-		users.update({_id:new ObjectId(uid)},{$set:user.get()})
-		res.send({status:200,user:user.get()})
-		return next()
-	})
-})
-
 server.post('/user', function(req, res, next) {
 	console.log("Api::insert user")
 
-	var user = new userModel(),errors=[]
-	if(user.set("fullname",req.params.fullname) === false) errors.push("fullname")
-	else if(user.set("gender",req.params.gender) === false) errors.push("gender")
-	else if(user.set("password",req.params.password) === false) errors.push("password")
-	else if(user.set("birthdate",req.params.birthdate) === false) errors.push("birthdate")
-	else if(req.params.phone && user.set("phone",req.params.phone) === false) errors.push("phone")
-	else if(user.set("email",req.params.email) === false) errors.push("email")
-	
-	if(errors.length > 0){
-		res.send({status:403,msg:"Invalid fields",errors:errors})
-		return next()
-	}
-	else{
-		// console.log(users.find({email:req.params.email}).limit(1));
-		if(users.find({email:req.params.email}).limit(1).length > 0){
-			res.send({status:403,msg:"An account associated with that email already exist."});return;
+	User.find({$or:[{email:req.params.email},{phone:req.params.phone}]},function(err,data){
+		// If the query fails (should not happen)
+		if(err){
+			res.statusCode = 500
+			res.send({msg:"An unknown error occured.",error:err});
+			return next()
 		}
 
-		users.insert(user.get())
-		res.send({status:200,msg:"User inserted",user:user.get()})
-		return next()
-	}
+		// We could just try and save and get the Mongo Save error
+		// but its nicer to explicitly check if the user exist to give a clear error
+		if(data.length > 0){
+			res.statusCode = 403
+			res.send({msg:"A user with this email or phone already exists!",error:{name: "existing"}});
+			return next()
+		}
+
+		// User doesn't exist, let's try and insert him and see if we get validation errors
+		var insert = new User(req.params)
+		insert.save(function(err,user){
+			// Mongoose Validation failed
+			if(err){
+				res.statusCode = 403
+				res.send({msg:"Failed to create user.",error:err});
+				return next()
+			}
+
+			// Build a session id
+			var now = new Date(),
+				tmp = now.getTime() + Math.floor(Math.random()*1000) + 1,
+				sessionid = Crypto.createHash('md5').update(tmp.toString()).digest('hex')
+
+			// insert session id and return user + sessionid
+			sessionStore.set(sessionid,user._id,function(err,data){
+				if(err){
+					// console.error("Failed to set session")
+					res.statusCode = 500
+					res.send({msg:"An error occured",error:err})
+					return next()
+				}
+				else{
+					// console.log("Session",sessionid,data._id)
+					res.send({user:user,sessionid:sessionid})
+					return next()
+				}
+			})
+		})
+	})
 })
 
-server.get('/user/:id', function(req, res, next) {
+server.get('/user/:identifier', function(req, res, next) {
 	console.log("Api::get user")
-	users.findOne({username:req.params.id},{_id:false,username:true,fullname:true,gender:true,age:true},function(err,user){
-		if(err)res.send({status:404,msg:"Could not find user",error:err})
-		res.send({status:200,user:user})
+
+	// You can pass either a MongoID or phone or Email
+	if(Mongoose.Types.ObjectId.isValid(req.params.identifier)){
+		var query = {_id:Mongoose.Types.ObjectId(req.params.identifier)}
+	}
+	else{
+		var query = {
+			$or:[
+				{phone:req.params.identifier},
+				{email:req.params.identifier}
+			]
+		}
+	}
+
+	User.findOne(query,function(err,user){
+		if(err){
+			res.statusCode = 404
+			res.send({msg:"Could not find user",error:err})
+			return next()
+		}
+		// Hide password from API
+		user.password = ""
+		res.send({user:user})
 		return next()
 	})
 })
 
-server.put('/user/:id', function(req, res, next) {
+server.put('/user/:identifier', function(req, res, next) {
 	console.log("Api::update user")
-	
-	users.findOne({username:req.params.id},function(err,data){
-		if(err)res.send({status:404,msg:"Could not find user",error:err})
-		var user = new userModel(data)
-		
-		forEach(req.params,function(e,i){
-			user.set(i,e)
-		})
-		users.update({username:req.params.id},user.get(),function(err,data){
-			if(err)res.send({status:404,msg:"Could not update user",error:err})
-			res.send({status:200,user:user.get()})
+
+	// You can pass either a MongoID or phone or Email
+	if(Mongoose.Types.ObjectId.isValid(req.params.identifier)){
+		var query = {_id:Mongoose.Types.ObjectId(req.params.identifier)}
+	}
+	else{
+		var query = {
+			$or:[
+				{phone:req.params.identifier},
+				{email:req.params.identifier}
+			]
+		}
+	}
+
+	// Try to find mathing user
+	User.findOne(query,function(err,user){
+		if(err){
+			res.statusCode = 404
+			res.send({msg:"Could not find user",error:err})
+			return next()
+		}
+
+		// Recursively replace user properties
+		user = Extend(true,user,req.params)
+
+		// Try and save user or return validation errors
+		user.save(function(err,data){
+			if(err){
+				res.statusCode = 403
+				res.send({msg:"Failed to update user",error:err})
+				return next()
+			}
+
+			// Hide password from API
+			user.password = ""
+			res.send({user:user})
 			return next()
 		})
 	})
 })
 
-server.get('/fixtures', function(req, res, next) {
-	var data = []
-	for(i=0;i<100;i++){
-		data.push(randomUser())
-	}
-	users.insert(data)
-	res.send({msg: "Fixtures inserted!"})
-	return next()
-})
-
-server.get('/cleanup', function(req, res, next) {
-	users.remove({isDummy:true})
-	res.send({msg: "Fixtures removed!"})
-	return next()
-})
 
 server.listen(port, function() {
   console.log('%s listening at %s', server.name, server.url)
 })
-
-
-/* Fake Validator for testing purposes
-
-var validator = {
-	isLength: function(){return true},
-	isIn: function(){return true}
-}
-
-*/
-
-
-// var fixtures = {
-// 	names: ["Henri","Samuel","Carlotta","Josh","Kelsey","Chey","Robert","Margaret","Gabriel","Angel","Jeremy"],
-// 	age: function(){return Math.floor(Math.random() * 80) + 20},
-// 	interests: ["lick pussy","suck dick","lick foot","eat cheese","drink wine","go hiking","watch a movie","make some art","get whipped","whip someone"],
-// 	genders: ["m","f","t"],
-// }
-// function randomFromArray(array){
-// 	return array[Math.floor(Math.random() * array.length)]
-// }
-// function randomUser(){
-// 	return new userModel()
-// 		.set("username",randomFromArray(fixtures.names).toLowerCase()+"_"+Math.floor(Math.random()*112)+Math.floor(Math.random()*11))
-// 		.set("fullname",randomFromArray(fixtures.names))
-// 		.set("gender",randomFromArray(fixtures.genders))
-// 		.set("age",fixtures.age())
-// 		.set("isDummy", true)
-// }

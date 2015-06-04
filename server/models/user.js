@@ -1,5 +1,28 @@
-var validator = require('validator')
-var Model = require('./model.js')
+const validator = require('validator'),
+	Model = require('./model.js'),
+	Mongoose = require('mongoose');
+
+var UserSchema = new Mongoose.Schema({
+	fullname: { type: String, required: true },
+	gender: { type: String, required: true },
+	email: { type: String, unique: true, required: true },
+	phone: { type: String, unique: true, required: true },
+	password: { type: String, required: false },
+	birthdate: { type: Date, required: false },
+	created: { type: Date, default: Date.now },
+	lastLogin: { type: Date }
+});
+
+UserSchema.methods.fields = function(cb){
+	return ["fullname","gender","email","phone","password","birthdate","created"]
+}
+
+module.exports = Mongoose.model('User', UserSchema, 'users');
+
+/*
+
+Older version
+
 
 var User = Model.extend({
 	allowedFields: function(){
@@ -48,3 +71,5 @@ var User = Model.extend({
 })
 
 module.exports = User
+
+*/

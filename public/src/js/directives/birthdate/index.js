@@ -1,5 +1,4 @@
-angular.module("Strawberry.birthdate",[])
-.factory('dateUtil', function (){
+angular.module("Strawberry.birthdate",[]).factory('dateUtil', function (){
 	var that = this,
 		dayRange = [1, 31],
 		// months = [

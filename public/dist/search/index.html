@@ -1,9 +1,13 @@
-<div id="search" class="questionaire">
+<div class="coming-soon" ng-show="env=='prod'">
+	<h1>Thanks for signing up!</h1>
+	<p>We are currently developing the app - we will let you know as soon as it's ready!</p>
+</div>
+<div id="search" ng-show="env=='dev'">
 	<div class="row">
 		<div class="prefix">Hi {{user.fullname}} - what would you like to do?</div>
 		<div class="input-box" ng-class="{'has-value': lookingFor}">
 			<input type="text" ng-model="lookingFor" id="searchField" inputfocus>
-			<div class="typewriter placeholder" typewriter data-typer-targets="drink wine, eat cheese, watch a movie, go to MoMA, have a 3sum, have a coffee, make some art, have a date, lick a foot"></div>
+			<div class="typewriter placeholder" placeholder="Lick a foot" data-options="drink wine, eat cheese, watch a movie, go to MoMA, have a 3sum, have a coffee, make some art, have a date, lick a foot"></div>
 		</div>
 	</div>
 

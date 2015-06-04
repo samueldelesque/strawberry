@@ -1,27 +1,25 @@
-(function(){
-	'use strict';
+angular.module("Strawberry.search", [
+	"ui.router",
+	"Strawberry.api",
+	"Strawberry.session"
+])
 
-	angular.module('Strawberry.search', [
-		'ngRoute',
-		'Strawberry.api',
-		'Strawberry.session'
-	])
+.config(function($stateProvider, $urlRouterProvider) {
+	$stateProvider.state("search", {
+		url: "/search",
+		templateUrl: "search/index.html",
+		controller: "searchCtrl"
+	});
+})
 
-	.config(function($routeProvider) {
-	  $routeProvider.when('/search', {
-		templateUrl: 'views/search/search.html',
-		controller: 'searchCtrl'
-	  });
-	})
+.controller("searchCtrl", function($scope, Api, Session) {
+	if(Session.user() == null){
+		$location.path("/")
+	}
+	$scope.user = Session.user()
+	$scope.search = function(){
+		alert("Sorry not available yet!")
+	}
+})
 
-	.controller('searchCtrl', function($scope, $location, Session, Api) {
-		if(!Session.get("user")){
-			console.error("Please sign in first")
-			$location.path("/login")
-		}
-		else{
-			console.log(Session.get("user"))
-			$scope.user = Session.get("user")
-		}
-	})
-})()
+module.exports = "Strawberry.search"

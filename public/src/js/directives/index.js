@@ -1,3 +1,4 @@
 "use strict";
  
-require("./birthdate");
+// require("./birthdate");
+// require("./typewrite");

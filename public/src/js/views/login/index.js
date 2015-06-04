@@ -14,10 +14,13 @@ angular.module('Strawberry.login', [
 })
 
 .controller('loginCtrl', function($scope,$location, $cookies, Api, Session) {
+	if(Session.user() != null){
+		$location.path('/search')
+	}
 	$scope.signIn = function(){
 		Api.login($scope.user).success(function(response){
-			Session.set("user",response.user)
-			Session.set("sessionid",response.sessionid)
+			Session.user(response.user)
+			Session.sessionid(response.sessionid)
 			$location.path('/search')
 		}).error(function(err,data){
 			alert("An error occured, please try again later")

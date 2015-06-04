@@ -177,6 +177,9 @@ th {
   src: url(../fonts/apercu-bold.otf) format("otf"), url(../fonts/apercu-bold.ttf) format("truetype");
   font-weight: bold; }
 
+p {
+  line-height: 1.6; }
+
 .clearfix:before,
 .birthdate:before,
 .clearfix:after, .birthdate:after {
@@ -203,12 +206,17 @@ form, .form {
   padding: 20px;
   text-align: center; }
 
-input {
+input, textarea {
   width: 100%;
   padding: 10px;
   outline: none;
   border: 5px solid #ba0059;
   border-radius: 5px; }
+  input.error, textarea.error {
+    background: #fbb;
+    color: white; }
+    input.error::input-placeholder, textarea.error::input-placeholder {
+      color: white; }
 
 .input-box {
   position: relative; }
@@ -292,6 +300,9 @@ button, .cta {
   border-radius: 5px;
   -webkit-transition: all 0.2s;
           transition: all 0.2s; }
+
+.coming-soon {
+  color: white; }
 
 #welcome {
   text-align: center; }

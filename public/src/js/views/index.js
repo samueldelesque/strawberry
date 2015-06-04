@@ -3,3 +3,4 @@
 require("./welcome");
 require("./login");
 require("./signup");
+require("./search");
