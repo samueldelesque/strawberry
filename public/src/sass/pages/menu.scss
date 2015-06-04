@@ -1,0 +1,13 @@
+header{
+	h1{
+		display: inline-block;
+	}
+	nav{
+		padding: 15px 0;
+		float: right;
+		display: inline-block;
+		a{
+			color:$maincolor;
+		}
+	}
+}
