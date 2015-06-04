@@ -13,6 +13,9 @@
 <body ng-controller="MainCtrl" class="{{controller}} {{animatingClass}}">
 	<header>
 		<h1><a href="#/" id="logo">Strawberry</a></h1>
+		<nav>
+			<a href ng-click="logout()" ng-show="isLoggedIn==true">logout ({{isLoggedIn}})</a>
+		</nav>
 	</header>
 
 	<main>

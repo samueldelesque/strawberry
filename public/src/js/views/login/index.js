@@ -17,13 +17,17 @@ angular.module('Strawberry.login', [
 	if(Session.user()){
 		$location.path('/search')
 	}
+	$scope.errorMessage = null;
 	$scope.signIn = function(){
 		Api.login($scope.user).success(function(response){
 			Session.user(response.user)
 			Session.sessionid(response.sessionid)
 			$location.path('/search')
-		}).error(function(err,data){
-			alert("An error occured, please try again later")
+		}).error(function(err){
+			$scope.errorMessage = err.msg
+			setTimeout(function(){
+				$scope.errorMessage = ""
+			},2000)
 		})
 	}
 })

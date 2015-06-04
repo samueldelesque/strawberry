@@ -80,7 +80,8 @@ server.get('/users', function(req, res, next) {
 })
 
 server.post('/login',function(req, res, next){
-	var missing = required({password:"string"},req,res,next)
+	console.log("Api::login")
+
 	if(!req.params.password || !req.params.identifier){
 		res.statusCode = 403
 		res.send({msg:"Missing arguments",error:{name:"missing"}})
@@ -102,7 +103,7 @@ server.post('/login',function(req, res, next){
 
 	// Find user
 	User.findOne(query,function(err,user){
-		if(err){
+		if(err||!user){
 			res.statusCode = 404
 			res.send({msg:"Could not find user",error:err})
 			return next()

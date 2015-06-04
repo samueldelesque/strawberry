@@ -5,31 +5,26 @@ angular.module('Strawberry.session',[
 .service('Session', function($http, $q, User){
 	var Session = this;
 	this.set = function(name,value){
-		localStorage.setItem(name,value)
+		localStorage.setItem(name,angular.toJson(value))
 	}
 	this.get = function(name){
-		return localStorage.getItem(name)
+		return angular.fromJson(localStorage.getItem(name))
 	}
 	this.user = function(user){
 		if(!user){
 			// Get user
-			var user = Session.get("user");
-			if(user != null){
-				return angular.fromJson(user)
-			}
-			return false
+			return Session.get("user")
 		}
 		else{
 			// Set user
-			Session.set("user",angular.toJson(user));
+			Session.set("user",user);
 			return user
 		}
 	}
 	this.sessionid = function(sessionid){
 		if(!sessionid){
 			// Get Sessionid
-			var sessionid = Session.get("sessionid");
-			return sessionid||false
+			return Session.get("sessionid")
 		}
 		else{
 			// Set Sessionid
