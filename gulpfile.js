@@ -13,6 +13,7 @@ var ignore = require("gulp-ignore");
 var assign = require("lodash.assign");
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
+var ngAnnotate = require('gulp-ng-annotate');
 var cssmin = require('gulp-cssmin');
 
 var env = gutil.env && gutil.env.env?gutil.env.env:"dev";
@@ -64,6 +65,7 @@ function bundle() {
 		.pipe(source("app.js"))
 		.pipe(ignore.exclude(["**/*.map"]))
 		.pipe(buffer())
+		.pipe(ngAnnotate())
 		.pipe((env=="prod")?uglify():gutil.noop())
 		// .pipe((env!=="prod")?sourcemaps.init({loadMaps: true}):gutil.noop())
 		// .pipe((env!=="prod"?)sourcemaps.write("./"):gutil.noop())
