@@ -29,19 +29,20 @@
     "validator": "~3.x"
   },
   "devDependencies": {
+    "browserify": "^10.x",
     "chai": "~2.x",
     "gulp": "^3.x",
-    "gulp-rename": "^1.2.2",
     "gulp-autoprefixer": "^2.3.0",
     "gulp-compass": "^2.1.0",
     "gulp-cssmin": "^0.1.7",
+    "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.0.1",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uglify": "^1.2.0",
-    "vinyl-source-stream": "^1.1.0",
+    "gulp-util": "^3.0.5",
     "lodash.assign": "^3.2.0",
     "vinyl-buffer": "^1.0.0",
-    "watchify": "^2.x",
-    "browserify": "^10.x"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^2.x"
   }
 }
