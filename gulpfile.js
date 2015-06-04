@@ -33,7 +33,7 @@ gulp.task('sass', function () {
 		// .pipe(sourcemaps.init({loadMaps: true}))
 		.pipe(sass({errLogToConsole:true}).on('error', sass.logError))
 		.pipe(autoprefixer())
-		.pipe(cssmin())
+		.pipe((env=="prod")?cssmin():gutil.noop())
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('./public/dist/css/'));
 });
