@@ -45,8 +45,12 @@ source ~/.bash_profile
 echo "install pm2"
 npm install -g pm2
 
-echo "install bower"
-npm install -g bower
+# Switched to NPM
+# echo "install bower"
+# npm install -g bower
+
+echo "install Redis"
+apt-get install redis-server
 
 echo "creating root app dir"
 mkdir /var/www

@@ -207,7 +207,7 @@ server.get('/user/:identifier', function(req, res, next) {
 	}
 
 	User.findOne(query,function(err,user){
-		if(err){
+		if(err||!user){
 			res.statusCode = 404
 			res.send({msg:"Could not find user",error:err})
 			return next()
