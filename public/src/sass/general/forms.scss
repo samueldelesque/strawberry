@@ -81,6 +81,13 @@ select{
 	width: 100%;
 	-webkit-appearance: none;
 }
+.error.msg{
+	padding: 10px;
+	border:1px solid darken($maincolor,24%);
+	background:darken($maincolor,20%);
+	color:lighten($maincolor,26%);
+	border-radius:5px;
+}
 .ctas{
 	margin: 10px 0;
 	font-size: 22px;

@@ -26,7 +26,7 @@ angular.module('Strawberry.login', [
 		}).error(function(err){
 			$scope.errorMessage = err.msg
 			setTimeout(function(){
-				$scope.errorMessage = ""
+				$scope.errorMessage = null
 			},2000)
 		})
 	}

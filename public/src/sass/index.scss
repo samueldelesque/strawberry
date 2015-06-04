@@ -9,7 +9,7 @@
 @import "pages/coming-soon.scss";
 @import "pages/welcome.scss";
 @import "pages/signup.scss";
-// @import "login.less";
+@import "pages/login.scss";
 
 * {
 	box-sizing: border-box;
@@ -59,6 +59,7 @@ header{
 main{
 	padding: 20px;
 	transition:all .2s;
+	position: relative;
 }
 footer{
 	text-align: center;

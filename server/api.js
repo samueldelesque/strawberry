@@ -84,7 +84,7 @@ server.post('/login',function(req, res, next){
 
 	if(!req.params.password || !req.params.identifier){
 		res.statusCode = 403
-		res.send({msg:"Missing arguments",error:{name:"missing"}})
+		res.send({msg:"Invalid email or password",error:{name:"missing"}})
 		return next()
 	}
 
@@ -121,7 +121,7 @@ server.post('/login',function(req, res, next){
 			sessionStore.set(sessionid,user._id,function(err,data){
 				if(err){
 					res.statusCode = 403
-					res.send({message:"An error occured",error:err})
+					res.send({msg:"An error occured",error:err})
 					return next()
 				}
 				else{
@@ -133,7 +133,7 @@ server.post('/login',function(req, res, next){
 		}
 		else{
 			res.statusCode = 401
-			res.send({message:"Invalid email or password"})
+			res.send({msg:"Invalid email or password"})
 			return next()
 		}
 	})
