@@ -33,7 +33,7 @@ gulp.task('sass', function () {
 		// .pipe(sourcemaps.init({loadMaps: true}))
 		.pipe(sass({errLogToConsole:true}).on('error', sass.logError))
 		.pipe(autoprefixer())
-		// .pipe(cssmin())
+		.pipe(cssmin())
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('./public/dist/css/'));
 });
@@ -63,9 +63,9 @@ function bundle() {
 		.on("error", gutil.log.bind(gutil, "Browserify Error"))
 		.pipe(source("app.js"))
 		.pipe(buffer())
-		.pipe(env=="prod"?uglify():gutil.noop())
-		.pipe(sourcemaps.init({loadMaps: true}))
-		.pipe(sourcemaps.write("./"))
+		.pipe((env=="prod")?uglify():gutil.noop())
+		// .pipe((env!=="prod")?sourcemaps.init({loadMaps: true}):gutil.noop())
+		// .pipe((env!=="prod"?)sourcemaps.write("./"):gutil.noop())
 		.pipe(gulp.dest("./public/dist/js"));
 }
 

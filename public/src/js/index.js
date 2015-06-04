@@ -27,7 +27,7 @@ module.exports = angular.module("Strawberry", [
 		$urlRouterProvider.otherwise("/");
 	})
 
-	.controller("MainCtrl", function($scope,$location,Session) {
+	.controller("MainCtrl", function($scope, $location, Session) {
 		if(Session.get("user")){
 			$location.path('/search')
 		}
