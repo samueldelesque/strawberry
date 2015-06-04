@@ -12,11 +12,10 @@ angular.module("Strawberry.search", [
 	});
 })
 
-.controller("searchCtrl", function($scope, Api, Session) {
+.controller("searchCtrl", function($scope, $location, Api, Session) {
 	if(!Session.user()){
 		$location.path("/")
 	}
-	window.ses = Session
 	$scope.user = Session.user()
 	$scope.search = function(){
 		alert("Sorry not available yet!")

@@ -37,6 +37,10 @@ angular.module('Strawberry.session',[
 			return sessionid
 		}
 	}
+	this.logout = function(){
+		this.set("sessionid",null)
+		this.set("user",null)
+	}
 })
 
 module.exports = "Strawberry.session"

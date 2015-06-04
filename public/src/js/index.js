@@ -31,6 +31,7 @@ module.exports = angular.module("Strawberry", [
 		if(Session.get("user")){
 			$location.path('/search')
 		}
+		window.ses = Session
 		$scope.body = angular.element(document.body)
 		$scope.env = window.Settings.env||"prod"
 	})
