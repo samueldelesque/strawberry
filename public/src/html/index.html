@@ -14,7 +14,7 @@
 	<header>
 		<h1><a href="#/" id="logo">Strawberry</a></h1>
 		<nav>
-			<a href ng-click="logout()" ng-show="isLoggedIn==true">logout ({{isLoggedIn}})</a>
+			<a href ng-click="logout()" ng-hide="Session.sessionid()==null">logout</a>
 		</nav>
 	</header>
 

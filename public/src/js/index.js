@@ -28,13 +28,16 @@ module.exports = angular.module("Strawberry", [
 	})
 
 	.controller("MainCtrl", function($scope, $location, Session) {
-		window.ses = Session
-		$scope.isLoggedIn = function(){Session.sessionid()?true:false}
+		$scope.Session = Session
 		$scope.body = angular.element(document.body)
 		$scope.env = window.Settings.env||"prod"
 
-		if($scope.isLoggedIn()){
-			$location.path('/search')
+		$scope.logout = function(){
+			Session.logout()
+			$location.path("/")
+		}
+		if(Session.sessionid()){
+			$location.path("/search")
 		}
 	})
 	.filter("percentage", function ($filter) {
