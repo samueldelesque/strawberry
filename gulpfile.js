@@ -18,7 +18,7 @@ var cssmin = require('gulp-cssmin');
 var env = gutil.env && gutil.env.env?gutil.env.env:"dev";
 
 var customOpts = {
-  entries: ["./src/js/index.js"],
+  entries: ["./public/src/js/index.js"],
   debug: true
 };
 var opts = assign({}, watchify.args, customOpts);
@@ -29,30 +29,30 @@ console.log("For prod, add `gulp --env=prod`. Current env: ",env)
 console.log("");
 
 gulp.task('sass', function () {
-	return gulp.src('./src/sass/index.scss')
+	return gulp.src('./public/src/sass/index.scss')
 		// .pipe(sourcemaps.init({loadMaps: true}))
 		.pipe(sass({errLogToConsole:true}).on('error', sass.logError))
 		.pipe(autoprefixer())
 		// .pipe(cssmin())
 		.pipe(sourcemaps.write())
-		.pipe(gulp.dest('./dist/css/'));
+		.pipe(gulp.dest('./public/dist/css/'));
 });
 gulp.task("html",function(){
-	return gulp.src('./src/html/**/*.html')
-		.pipe(gulp.dest('./dist/'))
+	return gulp.src('./public/src/html/**/*.html')
+		.pipe(gulp.dest('./public/dist/'))
 });
 gulp.task("settings",function(){
-	return gulp.src('./src/js/settings.'+env+'.js')
+	return gulp.src('./public/src/js/settings.'+env+'.js')
 		.pipe(rename("js/settings.js"))
-		.pipe(gulp.dest('./dist'))
+		.pipe(gulp.dest('./public/dist'))
 });
 gulp.task("fonts",function(){
-	return gulp.src('./src/fonts/**/*')
-		.pipe(gulp.dest('./dist/fonts'))
+	return gulp.src('./public/src/fonts/**/*')
+		.pipe(gulp.dest('./public/dist/fonts'))
 });
 gulp.task("img",function(){
-	return gulp.src('./src/img/**/*')
-		.pipe(gulp.dest('./dist/img'))
+	return gulp.src('./public/src/img/**/*')
+		.pipe(gulp.dest('./public/dist/img'))
 });
 gulp.task("js", bundle);
 b.on("update", bundle);
@@ -66,15 +66,15 @@ function bundle() {
 		.pipe(env=="prod"?uglify():gutil.noop())
 		.pipe(sourcemaps.init({loadMaps: true}))
 		.pipe(sourcemaps.write("./"))
-		.pipe(gulp.dest("./dist/js"));
+		.pipe(gulp.dest("./public/dist/js"));
 }
 
 gulp.task("watch", function() {
-	gulp.watch("./src/html/**/*.html", ["html"])
-	// gulp.watch("./src/less/**/*.less", ["less"])
-	gulp.watch("./src/sass/**/*.scss", ["sass"])
-	gulp.watch("./src/fonts/**/*", ["fonts"])
-	gulp.watch("./src/img/**/*", ["img"])
+	gulp.watch("./public/src/html/**/*.html", ["html"])
+	// gulp.watch("./public/src/less/**/*.less", ["less"])
+	gulp.watch("./public/src/sass/**/*.scss", ["sass"])
+	gulp.watch("./public/src/fonts/**/*", ["fonts"])
+	gulp.watch("./public/src/img/**/*", ["img"])
 });
 
 gulp.task("default",["html","sass","fonts","img","watch","js","settings"])
