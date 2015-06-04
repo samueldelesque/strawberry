@@ -14,7 +14,7 @@ angular.module('Strawberry.login', [
 })
 
 .controller('loginCtrl', function($scope,$location, $cookies, Api, Session) {
-	if(Session.user() != null){
+	if(Session.user()){
 		$location.path('/search')
 	}
 	$scope.signIn = function(){

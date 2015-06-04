@@ -13,7 +13,7 @@ angular.module("Strawberry.search", [
 })
 
 .controller("searchCtrl", function($scope, Api, Session) {
-	if(Session.user() == null){
+	if(!Session.user()){
 		$location.path("/")
 	}
 	window.ses = Session

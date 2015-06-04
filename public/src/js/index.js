@@ -28,7 +28,7 @@ module.exports = angular.module("Strawberry", [
 	})
 
 	.controller("MainCtrl", function($scope,$location,Session) {
-		if(Session.get("user") != null){
+		if(Session.get("user")){
 			$location.path('/search')
 		}
 		$scope.body = angular.element(document.body)

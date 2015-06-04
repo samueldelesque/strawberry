@@ -14,7 +14,7 @@ angular.module("Strawberry.signup", [
 })
 
 .controller("signupCtrl", function($scope,$location, Api, Session, User) {
-	if(Session.user() != null){
+	if(Session.user()){
 		$location.path('/search')
 	}
 	$scope.user = User;
