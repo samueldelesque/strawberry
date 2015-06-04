@@ -1,16 +1,16 @@
 "use strict";
 
+var gulp = require("gulp");
 var watchify = require("watchify");
 var uglify = require("gulp-uglify");
 var browserify = require("browserify");
-var gulp = require("gulp");
 var source = require("vinyl-source-stream");
 var rename = require("gulp-rename");
 var buffer = require("vinyl-buffer");
 var gutil = require("gulp-util");
-var sourcemaps = require("gulp-sourcemaps");
+var ignore = require("gulp-ignore");
+// var sourcemaps = require("gulp-sourcemaps");
 var assign = require("lodash.assign");
-// var less = require('gulp-less');
 var sass = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
 var cssmin = require('gulp-cssmin');
@@ -22,7 +22,7 @@ var customOpts = {
   debug: true
 };
 var opts = assign({}, watchify.args, customOpts);
-var b = watchify(browserify(opts));
+var builder = watchify(browserify(opts));
 
 console.log("");
 console.log("For prod, add `gulp --env=prod`. Current env: ",env)
@@ -34,7 +34,7 @@ gulp.task('sass', function () {
 		.pipe(sass({errLogToConsole:true}).on('error', sass.logError))
 		.pipe(autoprefixer())
 		.pipe((env=="prod")?cssmin():gutil.noop())
-		.pipe(sourcemaps.write())
+		// .pipe(sourcemaps.write())
 		.pipe(gulp.dest('./public/dist/css/'));
 });
 gulp.task("html",function(){
@@ -55,15 +55,16 @@ gulp.task("img",function(){
 		.pipe(gulp.dest('./public/dist/img'))
 });
 gulp.task("js", bundle);
-b.on("update", bundle);
-b.on("log", gutil.log);
+builder.on("update", bundle);
+builder.on("log", gutil.log);
 
 function bundle() {
-	return b.bundle()
+	return builder.bundle()
 		.on("error", gutil.log.bind(gutil, "Browserify Error"))
 		.pipe(source("app.js"))
+		.pipe(ignore.exclude(["**/*.map"]))
 		.pipe(buffer())
-		// .pipe((env=="prod")?uglify():gutil.noop())
+		.pipe((env=="prod")?uglify():gutil.noop())
 		// .pipe((env!=="prod")?sourcemaps.init({loadMaps: true}):gutil.noop())
 		// .pipe((env!=="prod"?)sourcemaps.write("./"):gutil.noop())
 		.pipe(gulp.dest("./public/dist/js"));
