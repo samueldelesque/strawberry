@@ -16,6 +16,7 @@ angular.module("Strawberry.search", [
 	if(Session.user() == null){
 		$location.path("/")
 	}
+	window.Session = Session
 	$scope.user = Session.user()
 	$scope.search = function(){
 		alert("Sorry not available yet!")
