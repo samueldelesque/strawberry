@@ -13,7 +13,7 @@ angular.module("Strawberry.signup", [
 	});
 })
 
-.controller("signupCtrl", function($scope,$location, Api, Session, User) {
+.controller("signupCtrl", function($scope, $location, Api, Session, User) {
 	if(Session.user()){
 		$location.path('/search')
 	}
@@ -71,7 +71,7 @@ angular.module("Strawberry.signup", [
 			Api.signup(data).success(function(response){
 				Session.user(response.user)
 				Session.sessionid(response.sessionid)
-				// $location.path("/search")
+				$location.path("/search")
 			}).error(function(err,data){
 				alert("An error occured, please try again later")
 			})
