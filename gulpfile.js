@@ -63,7 +63,7 @@ function bundle() {
 		.on("error", gutil.log.bind(gutil, "Browserify Error"))
 		.pipe(source("app.js"))
 		.pipe(buffer())
-		.pipe((env=="prod")?uglify():gutil.noop())
+		// .pipe((env=="prod")?uglify():gutil.noop())
 		// .pipe((env!=="prod")?sourcemaps.init({loadMaps: true}):gutil.noop())
 		// .pipe((env!=="prod"?)sourcemaps.write("./"):gutil.noop())
 		.pipe(gulp.dest("./public/dist/js"));
